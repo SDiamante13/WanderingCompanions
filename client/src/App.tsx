@@ -90,6 +90,28 @@ function App() {
 
   return (
     <KeyboardControls map={keyboardMap}>
+      {/* Simple welcome screen overlay if we're in welcome phase */}
+      {gamePhase === "welcome" && (
+        <div className="fixed inset-0 bg-blue-100 flex flex-col items-center justify-center z-10">
+          <div className="bg-white rounded-xl p-8 shadow-lg text-center w-96 max-w-full">
+            <h1 className="text-4xl font-bold text-blue-500 mb-4">Pet Adventure</h1>
+            <p className="text-gray-700 mb-6">Begin your journey with a new animal friend!</p>
+            <button 
+              className="px-6 py-3 bg-blue-500 text-white rounded-full font-bold text-lg shadow-md hover:bg-blue-600 transition"
+              onClick={() => setGamePhase(GamePhase.age_verification)}
+            >
+              START
+            </button>
+            
+            <div className="mt-8 flex justify-center space-x-6">
+              <div className="w-12 h-12 bg-orange-300 rounded-lg shadow-md"></div>
+              <div className="w-12 h-12 bg-green-300 rounded-lg shadow-md"></div>
+              <div className="w-12 h-12 bg-blue-300 rounded-lg shadow-md"></div>
+            </div>
+          </div>
+        </div>
+      )}
+      
       <Canvas
         shadows
         camera={{
