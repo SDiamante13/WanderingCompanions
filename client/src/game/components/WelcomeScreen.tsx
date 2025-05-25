@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { Text, useTexture } from "@react-three/drei";
+import { Text, useTexture, Html } from "@react-three/drei";
 import { useFrame, useThree } from "@react-three/fiber";
 import { useGameStore } from "../stores/useGameStore";
 import { GamePhase } from "../types";
@@ -59,7 +59,67 @@ const WelcomeScreen = () => {
       <ambientLight intensity={0.6} />
       <directionalLight position={[10, 10, 5]} intensity={1} castShadow />
       
-      {/* Title */}
+      {/* Fallback HTML overlay for better visibility */}
+      <Html fullscreen>
+        <div style={{ 
+          position: 'absolute', 
+          top: 0, 
+          left: 0, 
+          width: '100%', 
+          height: '100%', 
+          display: 'flex', 
+          flexDirection: 'column',
+          justifyContent: 'center', 
+          alignItems: 'center',
+          pointerEvents: 'none'
+        }}>
+          <div style={{ 
+            background: 'rgba(255, 255, 255, 0.9)',
+            padding: '30px 50px',
+            borderRadius: '15px',
+            textAlign: 'center',
+            boxShadow: '0 4px 30px rgba(0, 0, 0, 0.1)'
+          }}>
+            <h1 style={{ 
+              fontSize: '3rem', 
+              color: '#4FC3F7', 
+              margin: '0 0 10px 0',
+              fontFamily: 'Fredoka, sans-serif'
+            }}>
+              Pet Adventure
+            </h1>
+            <p style={{ 
+              fontSize: '1.2rem', 
+              color: '#424242',
+              marginBottom: '30px',
+              fontFamily: 'Fredoka, sans-serif'
+            }}>
+              Begin your journey with a new animal friend!
+            </p>
+            <button
+              style={{
+                background: '#4FC3F7',
+                color: 'white',
+                border: 'none',
+                padding: '12px 30px',
+                fontSize: '1.2rem',
+                borderRadius: '50px',
+                cursor: 'pointer',
+                pointerEvents: 'all',
+                fontWeight: 'bold',
+                boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)',
+                transition: 'transform 0.2s, box-shadow 0.2s',
+                fontFamily: 'Fredoka, sans-serif'
+              }}
+              onClick={() => setGamePhase(GamePhase.age_verification)}
+            >
+              START
+            </button>
+          </div>
+        </div>
+      </Html>
+      
+      {/* Title - Keep 3D elements as backup */}
       <Text
         font="/fonts/inter.json"
         position={[0, 4, 0]}

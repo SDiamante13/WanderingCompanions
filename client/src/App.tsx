@@ -60,6 +60,9 @@ function App() {
     };
   }, [setBackgroundMusic, setHitSound, setSuccessSound]);
 
+  // For debugging, log the current game phase
+  console.log("Current game phase:", gamePhase);
+
   // Render appropriate component based on game phase
   const renderGameContent = () => {
     switch (gamePhase) {
@@ -76,6 +79,7 @@ function App() {
       case "battle":
         return <Battle />;
       default:
+        console.log("Using default case, rendering WelcomeScreen");
         return <WelcomeScreen />;
     }
   };
