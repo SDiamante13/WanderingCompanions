@@ -1,9 +1,10 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Text, useTexture } from "@react-three/drei";
 import { useFrame, useThree } from "@react-three/fiber";
 import { useSpring, animated } from "@react-spring/three";
 import { useGameStore } from "../stores/useGameStore";
 import { GamePhase } from "../types";
+import * as THREE from "three";
 
 const AnimatedText = animated(Text);
 
@@ -69,7 +70,7 @@ const WelcomeScreen = () => {
   });
   
   // Create refs for objects
-  const buttonRef = useRef<THREE.Mesh>(null);
+  const buttonRef = useRef<THREE.Group>(null);
   
   return (
     <>
@@ -110,7 +111,7 @@ const WelcomeScreen = () => {
       {/* Subtitle */}
       <AnimatedText
         font="/fonts/inter.json"
-        position={subtitleSpring.position}
+        position={subtitleSpring.position.to((x, y, z) => [x, y, z])}
         color="#424242"
         fontSize={0.6}
         maxWidth={8}
@@ -126,8 +127,9 @@ const WelcomeScreen = () => {
       
       {/* Start button */}
       <animated.group
+        // @ts-ignore - Three.js typing issue
         ref={buttonRef}
-        position={buttonSpring.position}
+        position={buttonSpring.position.to((x, y, z) => [x, y, z])}
         scale={buttonSpring.scale}
         material-transparent
         material-opacity={buttonSpring.opacity}

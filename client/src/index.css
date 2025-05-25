@@ -183,3 +183,14 @@ canvas {
 .animate-pulse-slow {
   animation: pulse 3s infinite;
 }
+
+@keyframes loading-bar {
+  0% { width: 5%; }
+  50% { width: 70%; }
+  75% { width: 85%; }
+  100% { width: 100%; }
+}
+
+.animate-loading-bar {
+  animation: loading-bar 2s ease-in-out infinite;
+}
