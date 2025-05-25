@@ -69,7 +69,7 @@ const WelcomeScreen = () => {
   });
   
   // Create refs for objects
-  const buttonRef = React.useRef<THREE.Mesh>(null);
+  const buttonRef = useRef<THREE.Mesh>(null);
   
   return (
     <>
@@ -92,7 +92,7 @@ const WelcomeScreen = () => {
       {/* Title */}
       <AnimatedText
         font="/fonts/inter.json"
-        position={titleSpring.position}
+        position={titleSpring.position.to((x, y, z) => [x, y, z])}
         scale={titleSpring.scale}
         color="#424242"
         fontSize={1.5}

@@ -1,4 +1,4 @@
-import { PetType, BattleAction, TownLocation } from "./types";
+import { PetType, BattleAction, TownLocation, InventoryItem } from "./types";
 
 // Game constants
 export const MIN_AGE = 7; // Minimum age to play the game
@@ -221,14 +221,14 @@ export const TOWN_LOCATIONS = [
     id: TownLocation.school,
     name: "School",
     description: "Learn new skills and tricks for you and your pet.",
-    coordinates: [0, 0, -15],
+    coordinates: [0, 0, -15] as [number, number, number],
     unlocked: true,
   },
   {
     id: TownLocation.park,
     name: "Park",
     description: "A fun place to play and encounter wild animals.",
-    coordinates: [15, 0, -10],
+    coordinates: [15, 0, -10] as [number, number, number],
     unlocked: true,
   },
 ];

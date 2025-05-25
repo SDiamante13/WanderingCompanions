@@ -170,12 +170,17 @@ const Town = () => {
       )}
       
       {/* Town Locations */}
-      {TOWN_LOCATIONS.map((location) => (
+      {TOWN_LOCATIONS.map((loc) => (
         <LocationComponent
-          key={location.id}
-          location={location}
-          isUnlocked={unlockedLocations.includes(location.id)}
-          isActive={currentLocation === location.id}
+          key={loc.id}
+          location={{
+            id: loc.id,
+            name: loc.name,
+            description: loc.description,
+            coordinates: loc.coordinates as [number, number, number]
+          }}
+          isUnlocked={unlockedLocations.includes(loc.id)}
+          isActive={currentLocation === loc.id}
         />
       ))}
       
