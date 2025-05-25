@@ -2,7 +2,7 @@ import { Suspense, useEffect, useState } from "react";
 import { Canvas } from "@react-three/fiber";
 import { KeyboardControls } from "@react-three/drei";
 import { useAudio } from "./lib/stores/useAudio";
-import { Controls } from "./game/types";
+import { Controls, GamePhase } from "./game/types";
 import { useGameStore } from "./game/stores/useGameStore";
 import WelcomeScreen from "./game/components/WelcomeScreen";
 import AgeVerification from "./game/components/AgeVerification";
@@ -98,7 +98,7 @@ function App() {
             <p className="text-gray-700 mb-6">Begin your journey with a new animal friend!</p>
             <button 
               className="px-6 py-3 bg-blue-500 text-white rounded-full font-bold text-lg shadow-md hover:bg-blue-600 transition"
-              onClick={() => setGamePhase(GamePhase.age_verification)}
+              onClick={() => useGameStore.getState().setGamePhase("age_verification")}
             >
               START
             </button>
