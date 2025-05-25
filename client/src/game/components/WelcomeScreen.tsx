@@ -1,12 +1,9 @@
 import { useState, useEffect, useRef } from "react";
 import { Text, useTexture } from "@react-three/drei";
 import { useFrame, useThree } from "@react-three/fiber";
-import { useSpring, animated } from "@react-spring/three";
 import { useGameStore } from "../stores/useGameStore";
 import { GamePhase } from "../types";
 import * as THREE from "three";
-
-const AnimatedText = animated(Text);
 
 const WelcomeScreen = () => {
   const { setGamePhase } = useGameStore();
@@ -34,43 +31,15 @@ const WelcomeScreen = () => {
     return () => clearTimeout(timer);
   }, [camera]);
   
-  // Animation for title text
-  const titleSpring = useSpring({
-    from: { position: [0, 4, 0], scale: 0.5, opacity: 0 },
-    to: { position: [0, 4, 0], scale: 1, opacity: 1 },
-    config: { mass: 2, tension: 170, friction: 30 },
-    delay: 300,
-  });
+  // Button animation
+  const buttonRef = useRef<THREE.Mesh>(null);
   
-  // Animation for subtitle text
-  const subtitleSpring = useSpring({
-    from: { position: [0, 2.5, 0], opacity: 0 },
-    to: { position: [0, 2.5, 0], opacity: 1 },
-    config: { mass: 1, tension: 200, friction: 20 },
-    delay: 800,
-  });
-  
-  // Animation for start button
-  const buttonSpring = useSpring({
-    from: { position: [0, 1, 0], scale: 0.7, opacity: 0 },
-    to: { 
-      position: [0, 1, 0], 
-      scale: showStartButton ? 1 : 0.7, 
-      opacity: showStartButton ? 1 : 0 
-    },
-    config: { mass: 1, tension: 180, friction: 20 },
-  });
-  
-  // Floating animation for button
   useFrame(({ clock }) => {
     const t = clock.getElapsedTime();
     if (buttonRef.current) {
       buttonRef.current.position.y = 1 + Math.sin(t * 1.5) * 0.1;
     }
   });
-  
-  // Create refs for objects
-  const buttonRef = useRef<THREE.Group>(null);
   
   return (
     <>
@@ -91,10 +60,9 @@ const WelcomeScreen = () => {
       <directionalLight position={[10, 10, 5]} intensity={1} castShadow />
       
       {/* Title */}
-      <AnimatedText
+      <Text
         font="/fonts/inter.json"
-        position={titleSpring.position.to((x, y, z) => [x, y, z])}
-        scale={titleSpring.scale}
+        position={[0, 4, 0]}
         color="#424242"
         fontSize={1.5}
         maxWidth={10}
@@ -102,16 +70,14 @@ const WelcomeScreen = () => {
         textAlign="center"
         anchorX="center"
         anchorY="middle"
-        material-transparent
-        material-opacity={titleSpring.opacity}
       >
         Pet Adventure
-      </AnimatedText>
+      </Text>
       
       {/* Subtitle */}
-      <AnimatedText
+      <Text
         font="/fonts/inter.json"
-        position={subtitleSpring.position.to((x, y, z) => [x, y, z])}
+        position={[0, 2.5, 0]}
         color="#424242"
         fontSize={0.6}
         maxWidth={8}
@@ -119,36 +85,30 @@ const WelcomeScreen = () => {
         textAlign="center"
         anchorX="center"
         anchorY="middle"
-        material-transparent
-        material-opacity={subtitleSpring.opacity}
       >
         Begin your journey with a new animal friend!
-      </AnimatedText>
+      </Text>
       
       {/* Start button */}
-      <animated.group
-        // @ts-ignore - Three.js typing issue
-        ref={buttonRef}
-        position={buttonSpring.position.to((x, y, z) => [x, y, z])}
-        scale={buttonSpring.scale}
-        material-transparent
-        material-opacity={buttonSpring.opacity}
-        onClick={() => setGamePhase(GamePhase.age_verification)}
-      >
-        <mesh>
+      {showStartButton && (
+        <mesh 
+          ref={buttonRef}
+          position={[0, 1, 0]}
+          onClick={() => setGamePhase(GamePhase.age_verification)}
+        >
           <cylinderGeometry args={[1.2, 1.2, 0.4, 32]} />
           <meshStandardMaterial color="#4FC3F7" />
+          <Text
+            position={[0, 0, 0.21]}
+            color="white"
+            fontSize={0.4}
+            anchorX="center"
+            anchorY="middle"
+          >
+            START
+          </Text>
         </mesh>
-        <Text
-          position={[0, 0, 0.21]}
-          color="white"
-          fontSize={0.4}
-          anchorX="center"
-          anchorY="middle"
-        >
-          START
-        </Text>
-      </animated.group>
+      )}
       
       {/* Decorative elements */}
       <group position={[-4, 0, 0]}>
