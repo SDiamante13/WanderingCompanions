@@ -235,6 +235,189 @@ function App() {
         </div>
       )}
       
+      {/* Pet Assignment Screen */}
+      {gamePhase === "pet_assignment" && (
+        <div className="fixed inset-0 bg-blue-100 flex flex-col items-center justify-center z-10">
+          <div className="bg-white rounded-xl p-8 shadow-lg text-center w-[550px] max-w-full">
+            <h1 className="text-3xl font-bold text-blue-500 mb-4">Choose Your Pet</h1>
+            <p className="text-gray-700 mb-6">Select a pet companion for your adventure!</p>
+            
+            <div className="grid grid-cols-3 gap-4 mb-6">
+              <div 
+                className="bg-blue-50 p-4 rounded-lg cursor-pointer hover:bg-blue-100 transition" 
+                onClick={() => {
+                  document.getElementById('pet-type')!.value = 'dog';
+                  document.getElementById('pet-preview')!.style.backgroundColor = '#AED581';
+                  document.getElementById('pet-label')!.innerText = 'Dog';
+                }}
+              >
+                <div className="w-16 h-16 bg-green-400 rounded-full mx-auto mb-2"></div>
+                <p className="font-medium">Dog</p>
+              </div>
+              
+              <div 
+                className="bg-blue-50 p-4 rounded-lg cursor-pointer hover:bg-blue-100 transition" 
+                onClick={() => {
+                  document.getElementById('pet-type')!.value = 'cat';
+                  document.getElementById('pet-preview')!.style.backgroundColor = '#FFD54F';
+                  document.getElementById('pet-label')!.innerText = 'Cat';
+                }}
+              >
+                <div className="w-16 h-16 bg-yellow-400 rounded-full mx-auto mb-2"></div>
+                <p className="font-medium">Cat</p>
+              </div>
+              
+              <div 
+                className="bg-blue-50 p-4 rounded-lg cursor-pointer hover:bg-blue-100 transition" 
+                onClick={() => {
+                  document.getElementById('pet-type')!.value = 'rabbit';
+                  document.getElementById('pet-preview')!.style.backgroundColor = '#FFAB91';
+                  document.getElementById('pet-label')!.innerText = 'Rabbit';
+                }}
+              >
+                <div className="w-16 h-16 bg-orange-300 rounded-full mx-auto mb-2"></div>
+                <p className="font-medium">Rabbit</p>
+              </div>
+              
+              <div 
+                className="bg-blue-50 p-4 rounded-lg cursor-pointer hover:bg-blue-100 transition" 
+                onClick={() => {
+                  document.getElementById('pet-type')!.value = 'bird';
+                  document.getElementById('pet-preview')!.style.backgroundColor = '#81D4FA';
+                  document.getElementById('pet-label')!.innerText = 'Bird';
+                }}
+              >
+                <div className="w-16 h-16 bg-blue-300 rounded-full mx-auto mb-2"></div>
+                <p className="font-medium">Bird</p>
+              </div>
+              
+              <div 
+                className="bg-blue-50 p-4 rounded-lg cursor-pointer hover:bg-blue-100 transition" 
+                onClick={() => {
+                  document.getElementById('pet-type')!.value = 'turtle';
+                  document.getElementById('pet-preview')!.style.backgroundColor = '#A5D6A7';
+                  document.getElementById('pet-label')!.innerText = 'Turtle';
+                }}
+              >
+                <div className="w-16 h-16 bg-green-300 rounded-full mx-auto mb-2"></div>
+                <p className="font-medium">Turtle</p>
+              </div>
+              
+              <div 
+                className="bg-blue-50 p-4 rounded-lg cursor-pointer hover:bg-blue-100 transition" 
+                onClick={() => {
+                  document.getElementById('pet-type')!.value = 'hamster';
+                  document.getElementById('pet-preview')!.style.backgroundColor = '#CE93D8';
+                  document.getElementById('pet-label')!.innerText = 'Hamster';
+                }}
+              >
+                <div className="w-16 h-16 bg-purple-300 rounded-full mx-auto mb-2"></div>
+                <p className="font-medium">Hamster</p>
+              </div>
+            </div>
+            
+            <form 
+              onSubmit={(e) => {
+                e.preventDefault();
+                const nameInput = document.getElementById('pet-name') as HTMLInputElement;
+                const typeInput = document.getElementById('pet-type') as HTMLInputElement;
+                const name = nameInput.value.trim();
+                const type = typeInput.value;
+                
+                if (!name) {
+                  alert('Please enter a name for your pet');
+                } else if (!type) {
+                  alert('Please select a pet type');
+                } else {
+                  // Save pet information and start the game
+                  useGameStore.getState().setGamePhase("town");
+                }
+              }}
+              className="flex flex-col items-center"
+            >
+              <div className="mt-4 mb-6 bg-gray-100 p-4 rounded-lg flex items-center">
+                <div className="w-20 h-20 rounded-full bg-green-400" id="pet-preview"></div>
+                <div className="ml-4 text-left">
+                  <p className="text-gray-500 text-sm">Your Pet:</p>
+                  <p className="font-bold text-lg" id="pet-label">Dog</p>
+                  <input
+                    id="pet-name"
+                    type="text"
+                    placeholder="Pet's name"
+                    className="mt-1 p-2 border-2 border-blue-300 rounded-full text-sm"
+                    required
+                  />
+                </div>
+              </div>
+              
+              <input
+                id="pet-type"
+                type="hidden"
+                defaultValue="dog"
+              />
+              
+              <button 
+                type="submit"
+                className="px-6 py-3 bg-blue-500 text-white rounded-full font-bold text-lg shadow-md hover:bg-blue-600 transition"
+              >
+                Start Adventure
+              </button>
+            </form>
+          </div>
+        </div>
+      )}
+      
+      {/* Town Screen */}
+      {gamePhase === "town" && (
+        <div className="fixed inset-0 bg-blue-100 flex flex-col items-center justify-center z-10">
+          <div className="bg-white rounded-xl p-8 shadow-lg text-center w-[550px] max-w-full">
+            <h1 className="text-3xl font-bold text-blue-500 mb-4">Welcome to Pet Town!</h1>
+            <p className="text-gray-700 mb-6">Explore the town with your pet companion!</p>
+            
+            <div className="grid grid-cols-2 gap-4 mb-6">
+              <div className="bg-blue-50 p-4 rounded-lg cursor-pointer hover:bg-blue-100 transition">
+                <div className="w-16 h-16 bg-orange-300 rounded-lg mx-auto mb-2"></div>
+                <p className="font-medium">Home</p>
+                <p className="text-xs text-gray-500">Rest and play with your pet</p>
+              </div>
+              
+              <div className="bg-blue-50 p-4 rounded-lg cursor-pointer hover:bg-blue-100 transition">
+                <div className="w-16 h-16 bg-blue-300 rounded-lg mx-auto mb-2"></div>
+                <p className="font-medium">Pet Shop</p>
+                <p className="text-xs text-gray-500">Buy food and toys</p>
+              </div>
+              
+              <div className="bg-blue-50 p-4 rounded-lg cursor-pointer hover:bg-blue-100 transition">
+                <div className="w-16 h-16 bg-green-300 rounded-lg mx-auto mb-2"></div>
+                <p className="font-medium">Park</p>
+                <p className="text-xs text-gray-500">Meet other pets and play</p>
+              </div>
+              
+              <div className="bg-blue-50 p-4 rounded-lg cursor-pointer hover:bg-blue-100 transition">
+                <div className="w-16 h-16 bg-red-300 rounded-lg mx-auto mb-2"></div>
+                <p className="font-medium">Adventure</p>
+                <p className="text-xs text-gray-500">Go on an adventure with your pet</p>
+              </div>
+            </div>
+            
+            <div className="mt-4 mb-6 bg-gray-100 p-4 rounded-lg flex items-center">
+              <div className="flex space-x-4">
+                <div className="w-16 h-16 bg-blue-500 rounded-full"></div>
+                <div className="w-16 h-16 bg-green-400 rounded-full"></div>
+              </div>
+              <div className="ml-4 text-left">
+                <p className="font-bold">You and your pet are ready for adventures!</p>
+                <p className="text-sm text-gray-500">Click on a location to explore</p>
+              </div>
+            </div>
+            
+            <p className="text-sm text-gray-500 mt-6">
+              This is a simple demo of a pet adventure game. In a complete game, you would be able to interact with these locations, play with your pet, go on adventures, and more!
+            </p>
+          </div>
+        </div>
+      )}
+      
       <Canvas
         shadows
         camera={{
