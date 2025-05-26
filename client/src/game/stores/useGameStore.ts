@@ -10,6 +10,7 @@ interface GameState {
   totalBattles: number;
   showInventory: boolean;
   showDialog: boolean;
+  showShop: boolean;
   dialogContent: {
     title: string;
     message: string;
@@ -28,6 +29,10 @@ interface GameState {
   showDialogMessage: (title: string, message: string, onClose?: () => void) => void;
   closeDialog: () => void;
   
+  // Shop actions
+  openShop: () => void;
+  closeShop: () => void;
+  
   // Game save/load
   saveGame: () => GameSaveData;
   loadGame: (data: GameSaveData) => void;
@@ -44,6 +49,7 @@ export const useGameStore = create<GameState>()(
       totalBattles: 10,
       showInventory: false,
       showDialog: false,
+      showShop: false,
       dialogContent: {
         title: "",
         message: "",
@@ -93,6 +99,10 @@ export const useGameStore = create<GameState>()(
         }
       },
       
+      // Shop management
+      openShop: () => set({ showShop: true }),
+      closeShop: () => set({ showShop: false }),
+      
       // Game save/load
       saveGame: () => {
         const { unlockedLocations, completedBattles } = get();
@@ -128,6 +138,7 @@ export const useGameStore = create<GameState>()(
           totalBattles: 10,
           showInventory: false,
           showDialog: false,
+          showShop: false,
           dialogContent: { title: "", message: "" },
         });
       },

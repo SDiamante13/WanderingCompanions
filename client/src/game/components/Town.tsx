@@ -12,12 +12,13 @@ import Pet from "./models/Pet";
 import Environment from "./models/Environment";
 import LocationComponent from "./TownLocation";
 import { usePetStore } from "../stores/usePetStore";
+import Shop from "./Shop";
 
 const Town = () => {
   const { camera } = useThree();
   const { player } = usePlayerStore();
   const { pet } = usePetStore();
-  const { currentLocation, setLocation, unlockedLocations } = useGameStore();
+  const { currentLocation, setLocation, unlockedLocations, openShop } = useGameStore();
   const { startBattle } = useBattleStore();
   
   // Player movement refs
@@ -126,7 +127,7 @@ const Town = () => {
         break;
       case TownLocation.shop:
         // Show shop interface
-        // This would be handled in the UI components
+        openShop();
         break;
       case TownLocation.home:
         // Restore pet happiness and player health
