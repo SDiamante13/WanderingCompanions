@@ -23,6 +23,7 @@ export enum TownLocation {
   shop = "shop",
   school = "school",
   park = "park",
+  adventure = "adventure",
 }
 
 export enum PetType {

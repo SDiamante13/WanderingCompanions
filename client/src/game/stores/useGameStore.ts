@@ -42,7 +42,7 @@ interface GameState {
 export const useGameStore = create<GameState>()(
   persist(
     (set, get) => ({
-      gamePhase: GamePhase.welcome,
+      gamePhase: GamePhase.town,
       currentLocation: TownLocation.center,
       unlockedLocations: [TownLocation.center, TownLocation.home, TownLocation.shop],
       completedBattles: 0,
