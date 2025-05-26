@@ -22,11 +22,12 @@ export function GameInterface() {
     }
   }, [gamePhase, showInventory, toggleInventory]);
   
-  // Don't show interface during initial game phases
+  // Don't show interface during initial game phases or if player not ready
   if (gamePhase === "welcome" || 
       gamePhase === "age_verification" || 
       gamePhase === "character_creation" || 
-      gamePhase === "pet_assignment") {
+      gamePhase === "pet_assignment" ||
+      !player) {
     return null;
   }
   
