@@ -94,7 +94,7 @@ function App() {
       {gamePhase === "welcome" && (
         <div className="fixed inset-0 bg-blue-100 flex flex-col items-center justify-center z-10">
           <div className="bg-white rounded-xl p-8 shadow-lg text-center w-96 max-w-full">
-            <h1 className="text-4xl font-bold text-blue-500 mb-4">Pet Adventure</h1>
+            <h1 className="text-4xl font-bold text-blue-500 mb-4">Adventure Pets</h1>
             <p className="text-gray-700 mb-6">Begin your journey with a new animal friend!</p>
             <button 
               className="px-6 py-3 bg-blue-500 text-white rounded-full font-bold text-lg shadow-md hover:bg-blue-600 transition"
@@ -170,7 +170,7 @@ function App() {
         <div className="fixed inset-0 bg-blue-100 flex flex-col items-center justify-center z-10">
           <div className="bg-white rounded-xl p-8 shadow-lg text-center w-[450px] max-w-full">
             <h1 className="text-3xl font-bold text-blue-500 mb-4">Create Your Character</h1>
-            <p className="text-gray-700 mb-6">Customize your character for your pet adventure!</p>
+            <p className="text-gray-700 mb-6">Customize your character for your adventure with pets!</p>
             
             <form 
               onSubmit={(e) => {
@@ -367,56 +367,6 @@ function App() {
         </div>
       )}
       
-      {/* Town Screen */}
-      {gamePhase === "town" && (
-        <div className="fixed inset-0 bg-blue-100 flex flex-col items-center justify-center z-10">
-          <div className="bg-white rounded-xl p-8 shadow-lg text-center w-[550px] max-w-full">
-            <h1 className="text-3xl font-bold text-blue-500 mb-4">Welcome to Pet Town!</h1>
-            <p className="text-gray-700 mb-6">Explore the town with your pet companion!</p>
-            
-            <div className="grid grid-cols-2 gap-4 mb-6">
-              <div className="bg-blue-50 p-4 rounded-lg cursor-pointer hover:bg-blue-100 transition">
-                <div className="w-16 h-16 bg-orange-300 rounded-lg mx-auto mb-2"></div>
-                <p className="font-medium">Home</p>
-                <p className="text-xs text-gray-500">Rest and play with your pet</p>
-              </div>
-              
-              <div className="bg-blue-50 p-4 rounded-lg cursor-pointer hover:bg-blue-100 transition">
-                <div className="w-16 h-16 bg-blue-300 rounded-lg mx-auto mb-2"></div>
-                <p className="font-medium">Pet Shop</p>
-                <p className="text-xs text-gray-500">Buy food and toys</p>
-              </div>
-              
-              <div className="bg-blue-50 p-4 rounded-lg cursor-pointer hover:bg-blue-100 transition">
-                <div className="w-16 h-16 bg-green-300 rounded-lg mx-auto mb-2"></div>
-                <p className="font-medium">Park</p>
-                <p className="text-xs text-gray-500">Meet other pets and play</p>
-              </div>
-              
-              <div className="bg-blue-50 p-4 rounded-lg cursor-pointer hover:bg-blue-100 transition">
-                <div className="w-16 h-16 bg-red-300 rounded-lg mx-auto mb-2"></div>
-                <p className="font-medium">Adventure</p>
-                <p className="text-xs text-gray-500">Go on an adventure with your pet</p>
-              </div>
-            </div>
-            
-            <div className="mt-4 mb-6 bg-gray-100 p-4 rounded-lg flex items-center">
-              <div className="flex space-x-4">
-                <div className="w-16 h-16 bg-blue-500 rounded-full"></div>
-                <div className="w-16 h-16 bg-green-400 rounded-full"></div>
-              </div>
-              <div className="ml-4 text-left">
-                <p className="font-bold">You and your pet are ready for adventures!</p>
-                <p className="text-sm text-gray-500">Click on a location to explore</p>
-              </div>
-            </div>
-            
-            <p className="text-sm text-gray-500 mt-6">
-              This is a simple demo of a pet adventure game. In a complete game, you would be able to interact with these locations, play with your pet, go on adventures, and more!
-            </p>
-          </div>
-        </div>
-      )}
       
       <Canvas
         shadows

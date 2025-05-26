@@ -11,7 +11,7 @@ const LoadingScreen = () => {
         
         {/* Game title */}
         <div className="absolute top-4 left-0 right-0 text-center">
-          <h1 className="text-3xl font-bold text-blue-800">Pet Adventure</h1>
+          <h1 className="text-3xl font-bold text-blue-800">Adventure Pets</h1>
           <p className="text-blue-600 mt-1">Loading your adventure...</p>
         </div>
         

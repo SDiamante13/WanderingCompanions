@@ -144,7 +144,7 @@ export const useGameStore = create<GameState>()(
       },
     }),
     {
-      name: "pet-adventure-game",
+      name: "adventure-pets-game",
       partialize: (state) => ({
         unlockedLocations: state.unlockedLocations,
         completedBattles: state.completedBattles,

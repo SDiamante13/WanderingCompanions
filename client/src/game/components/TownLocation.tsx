@@ -14,12 +14,14 @@ interface TownLocationProps {
   };
   isUnlocked: boolean;
   isActive: boolean;
+  onClick?: (locationId: LocationType) => void;
 }
 
 const LocationComponent: React.FC<TownLocationProps> = ({ 
   location, 
   isUnlocked,
-  isActive
+  isActive,
+  onClick
 }) => {
   const groupRef = useRef<THREE.Group>(null);
   const floatRef = useRef<THREE.Group>(null);
@@ -252,11 +254,21 @@ const LocationComponent: React.FC<TownLocationProps> = ({
     }
   };
   
+  const handleClick = (event: any) => {
+    if (isUnlocked && onClick) {
+      event.stopPropagation();
+      onClick(location.id);
+    }
+  };
+
   return (
     <animated.group 
       ref={groupRef} 
       position={location.coordinates}
       scale={scale}
+      onClick={handleClick}
+      onPointerOver={() => document.body.style.cursor = isUnlocked ? 'pointer' : 'not-allowed'}
+      onPointerOut={() => document.body.style.cursor = 'default'}
     >
       {/* Building or location */}
       {renderBuilding()}

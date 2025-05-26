@@ -155,7 +155,7 @@ export const usePetStore = create<PetState>()(
       loadPet: (data) => set({ pet: data }),
     }),
     {
-      name: "pet-adventure-pet",
+      name: "adventure-pets-pet",
     }
   )
 );

@@ -182,6 +182,7 @@ const Town = () => {
           }}
           isUnlocked={unlockedLocations.includes(loc.id)}
           isActive={currentLocation === loc.id}
+          onClick={handleLocationInteraction}
         />
       ))}
       

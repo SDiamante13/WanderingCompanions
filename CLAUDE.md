@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-This is a 3D pet adventure game built with React Three Fiber and Express. Players create characters, choose pets, and explore a virtual town with battle mechanics. The architecture follows a client-server pattern with shared TypeScript schemas.
+This is a 3D adventure pets game built with React Three Fiber and Express. Players create characters, choose pets, and explore a virtual town with battle mechanics. The architecture follows a client-server pattern with shared TypeScript schemas.
 
 ## Development Commands
 

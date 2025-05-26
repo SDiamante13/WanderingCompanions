@@ -160,7 +160,7 @@ export const usePlayerStore = create<PlayerState>()(
       loadPlayer: (data) => set({ player: data }),
     }),
     {
-      name: "pet-adventure-player",
+      name: "adventure-pets-player",
     }
   )
 );

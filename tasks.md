@@ -1,4 +1,4 @@
-# Pet Adventure Game - Next 3 Features Implementation
+# Adventure Pets Game - Next 3 Features Implementation
 
 ## 🎯 **FEATURE 1: SHOP SYSTEM** [CHECKPOINT 1]
 **Acceptance Test:** Player can click on shop building, see tabbed interface with items, purchase items with coins, items appear in inventory

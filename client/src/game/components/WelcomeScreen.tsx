@@ -86,7 +86,7 @@ const WelcomeScreen = () => {
               margin: '0 0 10px 0',
               fontFamily: 'Fredoka, sans-serif'
             }}>
-              Pet Adventure
+              Adventure Pets
             </h1>
             <p style={{ 
               fontSize: '1.2rem', 
@@ -131,7 +131,7 @@ const WelcomeScreen = () => {
         anchorX="center"
         anchorY="middle"
       >
-        Pet Adventure
+        Adventure Pets
       </Text>
       
       {/* Subtitle */}
