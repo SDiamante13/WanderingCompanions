@@ -2,7 +2,7 @@ import { Suspense, useEffect, useState } from "react";
 import { Canvas } from "@react-three/fiber";
 import { KeyboardControls } from "@react-three/drei";
 import { useAudio } from "./lib/stores/useAudio";
-import { Controls, GamePhase } from "./game/types";
+import { Controls } from "./game/types";
 import { useGameStore } from "./game/stores/useGameStore";
 import WelcomeScreen from "./game/components/WelcomeScreen";
 import AgeVerification from "./game/components/AgeVerification";
@@ -28,6 +28,7 @@ const keyboardMap = [
 function App() {
   const [showCanvas, setShowCanvas] = useState(false);
   const gamePhase = useGameStore((state) => state.gamePhase);
+  const navigationMode = useGameStore((state) => state.navigationMode);
   const { setBackgroundMusic, setHitSound, setSuccessSound } = useAudio();
 
   // Initialize audio elements
@@ -63,13 +64,7 @@ function App() {
 
   // For debugging, log the current game phase
   console.log("Current game phase:", gamePhase);
-  
-  // Force game to town phase for map display
-  useEffect(() => {
-    if (gamePhase !== "town") {
-      useGameStore.getState().setGamePhase("town");
-    }
-  }, [gamePhase]);
+
 
   // Render appropriate component based on game phase
   const renderGameContent = () => {
@@ -98,29 +93,32 @@ function App() {
 
   return (
     <KeyboardControls map={keyboardMap}>
-      {/* Always show treasure map for now */}
-      <TreasureMap />
-      
-      <Canvas
-        shadows
-        camera={{
-          position: [0, 5, 10],
-          fov: 60,
-          near: 0.1,
-          far: 1000,
-        }}
-        gl={{
-          antialias: true,
-          powerPreference: "default",
-        }}
-      >
-        <color attach="background" args={["#87CEEB"]} />
-        
-        {/* Game content based on current phase */}
-        <Suspense fallback={null}>
-          {renderGameContent()}
-        </Suspense>
-      </Canvas>
+      {/* Show TreasureMap in 2D mode */}
+      {navigationMode === '2d' && <TreasureMap />}
+
+      {/* Show Canvas in 3D mode */}
+      {navigationMode === '3d' && (
+        <Canvas
+          shadows
+          camera={{
+            position: [0, 5, 10],
+            fov: 60,
+            near: 0.1,
+            far: 1000,
+          }}
+          gl={{
+            antialias: true,
+            powerPreference: "default",
+          }}
+        >
+          <color attach="background" args={["#87CEEB"]} />
+
+          {/* Game content based on current phase */}
+          <Suspense fallback={null}>
+            {renderGameContent()}
+          </Suspense>
+        </Canvas>
+      )}
 
       {/* UI elements outside of Canvas */}
       <GameInterface />
