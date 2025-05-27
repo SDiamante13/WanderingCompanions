@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback, useMemo } from "react";
 import { useGameStore } from "../../stores/useGameStore";
 import { usePlayerStore } from "../../stores/usePlayerStore";
 import { usePetStore } from "../../stores/usePetStore";
@@ -7,11 +7,28 @@ import { cn } from "../../../lib/utils";
 import Inventory from "../Inventory";
 import Shop from "../Shop";
 import School from "../School";
+import Home from "../Home";
+import Park from "../Park";
+import Adventure from "../Adventure";
 
 export function GameInterface() {
-  const { gamePhase, showDialog, dialogContent, closeDialog, showInventory, toggleInventory, showShop, showSchool } = useGameStore();
-  const { player } = usePlayerStore();
-  const { pet } = usePetStore();
+  // Optimize store subscriptions - only subscribe to what we need
+  const gamePhase = useGameStore((state) => state.gamePhase);
+  const showDialog = useGameStore((state) => state.showDialog);
+  const dialogContent = useGameStore((state) => state.dialogContent);
+  const closeDialog = useGameStore((state) => state.closeDialog);
+  const showInventory = useGameStore((state) => state.showInventory);
+  const toggleInventory = useGameStore((state) => state.toggleInventory);
+  const showShop = useGameStore((state) => state.showShop);
+  const showSchool = useGameStore((state) => state.showSchool);
+  const showHome = useGameStore((state) => state.showHome);
+  const showPark = useGameStore((state) => state.showPark);
+  const showAdventure = useGameStore((state) => state.showAdventure);
+  const navigationMode = useGameStore((state) => state.navigationMode);
+  const toggle2D3D = useGameStore((state) => state.toggle2D3D);
+  
+  const player = usePlayerStore((state) => state.player);
+  const pet = usePetStore((state) => state.pet);
   const { isMuted, toggleMute } = useAudio();
   
   const [showStats, setShowStats] = useState(false);
@@ -123,6 +140,12 @@ export function GameInterface() {
           >
             {isMuted ? "Unmute" : "Mute"}
           </button>
+          <button 
+            className="px-3 py-1 bg-purple-500 rounded-md hover:bg-purple-600 transition"
+            onClick={toggle2D3D}
+          >
+            Switch to {navigationMode === '2d' ? '3D' : '2D'}
+          </button>
         </div>
       </div>
       
@@ -168,6 +191,27 @@ export function GameInterface() {
       {showSchool && (
         <div className="absolute inset-0 pointer-events-auto">
           <School />
+        </div>
+      )}
+      
+      {/* Home */}
+      {showHome && (
+        <div className="absolute inset-0 pointer-events-auto">
+          <Home />
+        </div>
+      )}
+      
+      {/* Park */}
+      {showPark && (
+        <div className="absolute inset-0 pointer-events-auto">
+          <Park />
+        </div>
+      )}
+      
+      {/* Adventure */}
+      {showAdventure && (
+        <div className="absolute inset-0 pointer-events-auto">
+          <Adventure />
         </div>
       )}
       

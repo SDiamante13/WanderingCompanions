@@ -1,15 +1,26 @@
+import React, { useCallback, useMemo } from "react";
 import { useGameStore } from "../stores/useGameStore";
 import { usePlayerStore } from "../stores/usePlayerStore";
 import { usePetStore } from "../stores/usePetStore";
 import { TownLocation } from "../types";
 
 const TreasureMap = () => {
-  console.log("TreasureMap component is rendering!");
-  const { currentLocation, setLocation, unlockedLocations, openShop } = useGameStore();
-  const { player } = usePlayerStore();
-  const { pet } = usePetStore();
+  // Optimize store subscriptions
+  const currentLocation = useGameStore((state) => state.currentLocation);
+  const setLocation = useGameStore((state) => state.setLocation);
+  const unlockedLocations = useGameStore((state) => state.unlockedLocations);
+  const openShop = useGameStore((state) => state.openShop);
+  const openSchool = useGameStore((state) => state.openSchool);
+  const openHome = useGameStore((state) => state.openHome);
+  const openPark = useGameStore((state) => state.openPark);
+  const openAdventure = useGameStore((state) => state.openAdventure);
+  const setNavigationMode = useGameStore((state) => state.setNavigationMode);
+  
+  const player = usePlayerStore((state) => state.player);
+  const pet = usePetStore((state) => state.pet);
 
-  const locations = [
+  // Memoize locations array to prevent unnecessary re-renders
+  const locations = useMemo(() => [
     {
       id: TownLocation.home,
       name: "🏠 Home",
@@ -58,12 +69,13 @@ const TreasureMap = () => {
       position: { top: "45%", left: "50%" },
       unlocked: true
     }
-  ];
+  ], []);
 
   console.log("Locations array:", locations);
   console.log("Current location:", currentLocation);
 
-  const handleLocationClick = (locationId: TownLocation) => {
+  // Memoize click handler to prevent unnecessary re-renders
+  const handleLocationClick = useCallback((locationId: TownLocation) => {
     setLocation(locationId);
     
     switch (locationId) {
@@ -71,24 +83,26 @@ const TreasureMap = () => {
         openShop();
         break;
       case TownLocation.school:
-        useGameStore.getState().showDialogMessage("School", "Welcome to School! Choose from Library, Classroom, or Study Room.");
+        openSchool();
         break;
       case TownLocation.park:
-        useGameStore.getState().showDialogMessage("Park", "Welcome to the Park! Enjoy the Slide, Swings, and Sandpit!");
+        openPark();
         break;
       case TownLocation.home:
-        useGameStore.getState().showDialogMessage("Home", "Welcome Home! Visit the Kitchen, Bathroom, or Bedroom.");
+        openHome();
         break;
       case TownLocation.adventure:
-        useGameStore.getState().showDialogMessage("Adventure", "Welcome to the Forest! Adventure and battles await!");
+        openAdventure();
         break;
       case TownLocation.center:
-        useGameStore.getState().showDialogMessage("Town Center", "Welcome to the Town Center! This is where all adventures begin!");
+        setNavigationMode('3d');
         break;
       default:
         break;
     }
-  };
+  }, [setLocation, openShop, openSchool, openPark, openHome, openAdventure, setNavigationMode]);
+
+
 
   return (
     <div className="fixed inset-0 bg-gradient-to-br from-amber-100 via-orange-50 to-amber-200 flex items-center justify-center z-50">
@@ -260,4 +274,4 @@ const TreasureMap = () => {
   );
 };
 
-export default TreasureMap;
+export default React.memo(TreasureMap);
