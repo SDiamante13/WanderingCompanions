@@ -12,11 +12,19 @@ interface GameState {
   showDialog: boolean;
   showShop: boolean;
   showSchool: boolean;
+  showHome: boolean;
+  showPark: boolean;
+  showAdventure: boolean;
+  currentSubLocation: string | null;
+  navigationMode: '2d' | '3d';
   dialogContent: {
     title: string;
     message: string;
     onClose?: () => void;
   };
+  
+  // Helper to close all locations
+  closeAllLocations: () => void;
   
   // Game actions
   setGamePhase: (phase: GamePhase) => void;
@@ -38,6 +46,23 @@ interface GameState {
   openSchool: () => void;
   closeSchool: () => void;
   
+  // Home actions
+  openHome: () => void;
+  closeHome: () => void;
+  setSubLocation: (subLocation: string | null) => void;
+  
+  // Park actions
+  openPark: () => void;
+  closePark: () => void;
+  
+  // Adventure actions
+  openAdventure: () => void;
+  closeAdventure: () => void;
+  
+  // Navigation actions
+  setNavigationMode: (mode: '2d' | '3d') => void;
+  toggle2D3D: () => void;
+  
   // Game save/load
   saveGame: () => GameSaveData;
   loadGame: (data: GameSaveData) => void;
@@ -49,17 +74,32 @@ export const useGameStore = create<GameState>()(
     (set, get) => ({
       gamePhase: GamePhase.town,
       currentLocation: TownLocation.center,
-      unlockedLocations: [TownLocation.center, TownLocation.home, TownLocation.shop],
+      unlockedLocations: [TownLocation.center, TownLocation.home, TownLocation.shop, TownLocation.school, TownLocation.park, TownLocation.adventure],
       completedBattles: 0,
       totalBattles: 10,
       showInventory: false,
       showDialog: false,
       showShop: false,
       showSchool: false,
+      showHome: false,
+      showPark: false,
+      showAdventure: false,
+      currentSubLocation: null,
+      navigationMode: '2d',
       dialogContent: {
         title: "",
         message: "",
       },
+      
+      // Helper to close all locations
+      closeAllLocations: () => set({
+        showShop: false,
+        showSchool: false,
+        showHome: false,
+        showPark: false,
+        showAdventure: false,
+        currentSubLocation: null
+      }),
       
       // Game phase management
       setGamePhase: (phase) => set({ gamePhase: phase }),
@@ -106,12 +146,66 @@ export const useGameStore = create<GameState>()(
       },
       
       // Shop management
-      openShop: () => set({ showShop: true }),
+      openShop: () => set({
+        showShop: true,
+        showSchool: false,
+        showHome: false,
+        showPark: false,
+        showAdventure: false,
+        currentSubLocation: null
+      }),
       closeShop: () => set({ showShop: false }),
       
       // School management
-      openSchool: () => set({ showSchool: true }),
+      openSchool: () => set({
+        showSchool: true,
+        showShop: false,
+        showHome: false,
+        showPark: false,
+        showAdventure: false,
+        currentSubLocation: null
+      }),
       closeSchool: () => set({ showSchool: false }),
+      
+      // Home management
+      openHome: () => set({
+        showHome: true,
+        showShop: false,
+        showSchool: false,
+        showPark: false,
+        showAdventure: false,
+        currentSubLocation: null
+      }),
+      closeHome: () => set({ showHome: false, currentSubLocation: null }),
+      setSubLocation: (subLocation) => set({ currentSubLocation: subLocation }),
+      
+      // Park management
+      openPark: () => set({
+        showPark: true,
+        showShop: false,
+        showSchool: false,
+        showHome: false,
+        showAdventure: false,
+        currentSubLocation: null
+      }),
+      closePark: () => set({ showPark: false, currentSubLocation: null }),
+      
+      // Adventure management
+      openAdventure: () => set({
+        showAdventure: true,
+        showShop: false,
+        showSchool: false,
+        showHome: false,
+        showPark: false,
+        currentSubLocation: null
+      }),
+      closeAdventure: () => set({ showAdventure: false, currentSubLocation: null }),
+      
+      // Navigation management
+      setNavigationMode: (mode) => set({ navigationMode: mode }),
+      toggle2D3D: () => set((state) => ({ 
+        navigationMode: state.navigationMode === '2d' ? '3d' : '2d' 
+      })),
       
       // Game save/load
       saveGame: () => {
@@ -140,16 +234,16 @@ export const useGameStore = create<GameState>()(
         // Other stores should load their data from here as well
       },
       resetGame: () => {
+        get().closeAllLocations();
         set({
           gamePhase: GamePhase.welcome,
           currentLocation: TownLocation.center,
-          unlockedLocations: [TownLocation.center, TownLocation.home, TownLocation.shop],
+          unlockedLocations: [TownLocation.center, TownLocation.home, TownLocation.shop, TownLocation.school, TownLocation.park, TownLocation.adventure],
           completedBattles: 0,
           totalBattles: 10,
           showInventory: false,
           showDialog: false,
-          showShop: false,
-          showSchool: false,
+          navigationMode: '2d',
           dialogContent: { title: "", message: "" },
         });
       },

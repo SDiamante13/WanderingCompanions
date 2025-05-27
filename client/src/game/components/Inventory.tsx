@@ -16,7 +16,7 @@ const Inventory: React.FC<InventoryProps> = ({ onClose }) => {
   // Early return if player not initialized
   if (!player || !player.inventory) {
     return (
-      <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
+      <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-[60]">
         <div className="bg-white rounded-3xl shadow-lg border-4 border-blue-500 p-8 text-center">
           <h2 className="text-2xl font-bold mb-4">Loading...</h2>
           <button
@@ -77,7 +77,7 @@ const Inventory: React.FC<InventoryProps> = ({ onClose }) => {
   const usedSlots = (player.inventory || []).reduce((sum, item) => sum + item.quantity, 0);
   
   return (
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
+    <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-[60]">
       <div className="bg-white rounded-3xl shadow-lg border-4 border-blue-500 max-w-2xl w-full max-h-[90vh] overflow-hidden">
         {/* Header */}
         <div className="p-4 bg-blue-500 text-white flex justify-between items-center">

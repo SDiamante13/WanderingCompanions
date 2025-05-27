@@ -31,6 +31,11 @@ export function GameInterface() {
   const pet = usePetStore((state) => state.pet);
   const { isMuted, toggleMute } = useAudio();
   
+  // Debug logging (commented out for performance)
+  // console.log("🎮 GameInterface: Modal states -", {
+  //   showShop, showSchool, showHome, showPark, showAdventure
+  // });
+  
   const [showStats, setShowStats] = useState(false);
   
   // Hide inventory when game phase changes
@@ -182,42 +187,57 @@ export function GameInterface() {
       
       {/* Shop */}
       {showShop && (
-        <div className="absolute inset-0 pointer-events-auto">
+        <div 
+          className="fixed inset-0 pointer-events-auto z-[100]"
+          onClick={(e) => e.stopPropagation()}
+        >
           <Shop />
         </div>
       )}
       
       {/* School */}
       {showSchool && (
-        <div className="absolute inset-0 pointer-events-auto">
+        <div 
+          className="fixed inset-0 pointer-events-auto z-[100]"
+          onClick={(e) => e.stopPropagation()}
+        >
           <School />
         </div>
       )}
       
       {/* Home */}
       {showHome && (
-        <div className="absolute inset-0 pointer-events-auto">
+        <div 
+          className="fixed inset-0 pointer-events-auto z-[100]"
+          onClick={(e) => e.stopPropagation()}
+        >
           <Home />
         </div>
       )}
       
       {/* Park */}
       {showPark && (
-        <div className="absolute inset-0 pointer-events-auto">
+        <div 
+          className="fixed inset-0 pointer-events-auto z-[100]"
+          onClick={(e) => e.stopPropagation()}
+        >
           <Park />
         </div>
       )}
       
       {/* Adventure */}
       {showAdventure && (
-        <div className="absolute inset-0 pointer-events-auto">
+        <div 
+          className="fixed inset-0 pointer-events-auto z-[100]"
+          onClick={(e) => e.stopPropagation()}
+        >
           <Adventure />
         </div>
       )}
       
       {/* Dialog */}
       {showDialog && (
-        <div className="absolute inset-0 bg-black/50 flex items-center justify-center pointer-events-auto">
+        <div className="absolute inset-0 bg-black/50 flex items-center justify-center pointer-events-auto z-[70]">
           <div className="bg-white rounded-lg p-4 max-w-md w-full">
             <h2 className="text-xl font-bold mb-2">{dialogContent.title}</h2>
             <p className="mb-4">{dialogContent.message}</p>

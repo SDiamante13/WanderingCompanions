@@ -10,6 +10,7 @@ interface PetState {
   // Pet actions
   assignRandomPet: () => void;
   setPet: (petType: PetType, name: string, color: string) => void;
+  setPetObject: (pet: Pet) => void;
   setPetName: (name: string) => void;
   updatePetHealth: (amount: number) => void;
   updatePetHappiness: (amount: number) => void;
@@ -68,6 +69,9 @@ export const usePetStore = create<PetState>()(
           set({ pet: newPet });
         }
       },
+      
+      // Set pet with a full pet object
+      setPetObject: (pet) => set({ pet }),
       
       // Update pet name
       setPetName: (name) => set((state) => {

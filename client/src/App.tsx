@@ -62,8 +62,6 @@ function App() {
     };
   }, [setBackgroundMusic, setHitSound, setSuccessSound]);
 
-  // For debugging, log the current game phase
-  console.log("Current game phase:", gamePhase);
 
 
   // Render appropriate component based on game phase
@@ -96,28 +94,30 @@ function App() {
       {/* Show TreasureMap in 2D mode */}
       {navigationMode === '2d' && <TreasureMap />}
 
-      {/* Show Canvas in 3D mode */}
+      {/* Show Canvas in 3D mode only */}
       {navigationMode === '3d' && (
-        <Canvas
-          shadows
-          camera={{
-            position: [0, 5, 10],
-            fov: 60,
-            near: 0.1,
-            far: 1000,
-          }}
-          gl={{
-            antialias: true,
-            powerPreference: "default",
-          }}
-        >
-          <color attach="background" args={["#87CEEB"]} />
+        <div className="fixed inset-0 z-10">
+          <Canvas
+            shadows
+            camera={{
+              position: [0, 5, 10],
+              fov: 60,
+              near: 0.1,
+              far: 1000,
+            }}
+            gl={{
+              antialias: true,
+              powerPreference: "default",
+            }}
+          >
+            <color attach="background" args={["#87CEEB"]} />
 
-          {/* Game content based on current phase */}
-          <Suspense fallback={null}>
-            {renderGameContent()}
-          </Suspense>
-        </Canvas>
+            {/* Game content based on current phase */}
+            <Suspense fallback={null}>
+              {renderGameContent()}
+            </Suspense>
+          </Canvas>
+        </div>
       )}
 
       {/* UI elements outside of Canvas */}

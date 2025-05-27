@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo } from "react";
+import React, { useCallback, useMemo, useState } from "react";
 import { useGameStore } from "../stores/useGameStore";
 import { usePlayerStore } from "../stores/usePlayerStore";
 import { usePetStore } from "../stores/usePetStore";
@@ -18,6 +18,9 @@ const TreasureMap = () => {
   
   const player = usePlayerStore((state) => state.player);
   const pet = usePetStore((state) => state.pet);
+  
+  // Track clicked location for immediate visual feedback
+  const [clickedLocation, setClickedLocation] = useState<TownLocation | null>(null);
 
   // Memoize locations array to prevent unnecessary re-renders
   const locations = useMemo(() => [
@@ -71,13 +74,16 @@ const TreasureMap = () => {
     }
   ], []);
 
-  console.log("Locations array:", locations);
-  console.log("Current location:", currentLocation);
 
   // Memoize click handler to prevent unnecessary re-renders
   const handleLocationClick = useCallback((locationId: TownLocation) => {
+    // Provide immediate visual feedback
+    setClickedLocation(locationId);
+    
+    // Immediately set location
     setLocation(locationId);
     
+    // Open the corresponding location screen immediately
     switch (locationId) {
       case TownLocation.shop:
         openShop();
@@ -100,6 +106,9 @@ const TreasureMap = () => {
       default:
         break;
     }
+    
+    // Clear visual feedback after a short delay
+    setTimeout(() => setClickedLocation(null), 300);
   }, [setLocation, openShop, openSchool, openPark, openHome, openAdventure, setNavigationMode]);
 
 
@@ -175,11 +184,21 @@ const TreasureMap = () => {
               left: location.position.left,
               transform: 'translate(-50%, -50%)'
             }}
-            onClick={() => handleLocationClick(location.id)}
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              handleLocationClick(location.id);
+            }}
           >
             {/* Simple Location Button */}
             <div 
-              className="w-32 h-32 bg-red-500 rounded-full flex items-center justify-center text-white font-bold text-3xl shadow-xl border-4 border-red-700 hover:scale-110 transition-transform"
+              className={`w-32 h-32 rounded-full flex items-center justify-center text-white font-bold text-3xl shadow-xl border-4 transition-all duration-200 ${
+                clickedLocation === location.id 
+                  ? 'bg-yellow-500 border-yellow-600 scale-125' 
+                  : currentLocation === location.id
+                  ? 'bg-yellow-400 border-yellow-600'
+                  : 'bg-red-500 border-red-700 hover:scale-110'
+              }`}
             >
               {location.name.split(" ")[0]}
             </div>
@@ -211,7 +230,7 @@ const TreasureMap = () => {
               <span>Current Location</span>
             </div>
             <div className="flex items-center gap-2">
-              <div className="w-4 h-4 bg-white rounded-full border border-amber-600"></div>
+              <div className="w-4 h-4 bg-red-500 rounded-full border border-red-700"></div>
               <span>Available Location</span>
             </div>
             <div className="flex items-center gap-2">

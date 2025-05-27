@@ -18,6 +18,7 @@ interface PlayerState {
   removeItem: (itemId: string) => void;
   useItem: (itemId: string) => void;
   updateCoins: (amount: number) => void;
+  spendCoins: (amount: number) => void;
   
   // Save/load
   resetPlayer: () => void;
@@ -152,6 +153,10 @@ export const usePlayerStore = create<PlayerState>()(
       
       updateCoins: (amount) => set((state) => ({
         player: { ...state.player, coins: Math.max(0, state.player.coins + amount) }
+      })),
+      
+      spendCoins: (amount) => set((state) => ({
+        player: { ...state.player, coins: Math.max(0, state.player.coins - amount) }
       })),
       
       // Save/load

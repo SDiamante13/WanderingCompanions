@@ -231,6 +231,13 @@ export const TOWN_LOCATIONS = [
     coordinates: [15, 0, -10] as [number, number, number],
     unlocked: true,
   },
+  {
+    id: TownLocation.adventure,
+    name: "Adventure",
+    description: "Explore the mysterious forest and discover its secrets.",
+    coordinates: [-15, 0, -10] as [number, number, number],
+    unlocked: true,
+  },
 ];
 
 // Shop items

@@ -18,7 +18,7 @@ const Town = () => {
   const { camera } = useThree();
   const { player } = usePlayerStore();
   const { pet } = usePetStore();
-  const { currentLocation, setLocation, unlockedLocations, openShop, openSchool } = useGameStore();
+  const { currentLocation, setLocation, unlockedLocations, openShop, openSchool, openHome, openPark, openAdventure } = useGameStore();
   const { startBattle } = useBattleStore();
   
   // Player movement refs
@@ -102,6 +102,7 @@ const Town = () => {
       
       // If player is close to a location and presses interact
       if (distance < 3 && interact && unlockedLocations.includes(loc.id)) {
+        console.log('Interacting with location:', loc.id, 'distance:', distance);
         handleLocationInteraction(loc.id);
       }
     });
@@ -120,20 +121,18 @@ const Town = () => {
     // Handle location-specific logic
     switch (location) {
       case TownLocation.park:
-        // Random chance to start a battle in the park
-        if (Math.random() > 0.5) {
-          startBattle();
-        }
+        openPark();
+        break;
+      case TownLocation.adventure:
+        openAdventure();
         break;
       case TownLocation.shop:
-        // Show shop interface
         openShop();
         break;
       case TownLocation.home:
-        // Restore pet happiness and player health
+        openHome();
         break;
       case TownLocation.school:
-        // Show school interface
         openSchool();
         break;
       default:

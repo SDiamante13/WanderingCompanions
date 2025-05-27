@@ -51,6 +51,8 @@ const LocationComponent: React.FC<TownLocationProps> = ({
         return "#AED581"; // Accent color
       case LocationType.park:
         return "#8BC34A"; // Green
+      case LocationType.adventure:
+        return "#4E342E"; // Brown
       default:
         return "#F5F5F5"; // Neutral
     }
@@ -195,6 +197,62 @@ const LocationComponent: React.FC<TownLocationProps> = ({
             <mesh position={[0.8, 0.15, 1]}>
               <boxGeometry args={[0.1, 0.3, 0.5]} />
               <meshStandardMaterial color="#5D4037" />
+            </mesh>
+          </>
+        );
+        
+      case LocationType.adventure:
+        return (
+          <>
+            {/* Forest base */}
+            <mesh position={[0, 0, 0]} rotation={[-Math.PI / 2, 0, 0]}>
+              <circleGeometry args={[3.5, 32]} />
+              <meshStandardMaterial color="#3E2723" />
+            </mesh>
+            {/* Trees in forest */}
+            <group position={[-1, 0, -1.5]}>
+              <mesh position={[0, 1, 0]}>
+                <cylinderGeometry args={[0.3, 0.4, 2, 8]} />
+                <meshStandardMaterial color="#5D4037" />
+              </mesh>
+              <mesh position={[0, 2.2, 0]}>
+                <coneGeometry args={[1.2, 2.5, 8]} />
+                <meshStandardMaterial color="#2E7D32" />
+              </mesh>
+            </group>
+            <group position={[1.5, 0, -0.5]}>
+              <mesh position={[0, 1.2, 0]}>
+                <cylinderGeometry args={[0.25, 0.35, 2.4, 8]} />
+                <meshStandardMaterial color="#5D4037" />
+              </mesh>
+              <mesh position={[0, 2.6, 0]}>
+                <coneGeometry args={[1, 2, 8]} />
+                <meshStandardMaterial color="#388E3C" />
+              </mesh>
+            </group>
+            <group position={[0, 0, 1.2]}>
+              <mesh position={[0, 0.8, 0]}>
+                <cylinderGeometry args={[0.2, 0.3, 1.6, 8]} />
+                <meshStandardMaterial color="#5D4037" />
+              </mesh>
+              <mesh position={[0, 1.8, 0]}>
+                <coneGeometry args={[0.8, 1.5, 8]} />
+                <meshStandardMaterial color="#43A047" />
+              </mesh>
+            </group>
+            {/* Mysterious glow */}
+            <mesh position={[0, 1, 0]}>
+              <sphereGeometry args={[0.3, 16, 16]} />
+              <meshBasicMaterial color="#FFD54F" transparent opacity={0.3} />
+            </mesh>
+            {/* Path markers */}
+            <mesh position={[-2, 0.1, 2]}>
+              <cylinderGeometry args={[0.15, 0.15, 0.2, 8]} />
+              <meshStandardMaterial color="#8D6E63" />
+            </mesh>
+            <mesh position={[2, 0.1, 2]}>
+              <cylinderGeometry args={[0.15, 0.15, 0.2, 8]} />
+              <meshStandardMaterial color="#8D6E63" />
             </mesh>
           </>
         );
