@@ -6,9 +6,10 @@ import { useAudio } from "../../../lib/stores/useAudio";
 import { cn } from "../../../lib/utils";
 import Inventory from "../Inventory";
 import Shop from "../Shop";
+import School from "../School";
 
 export function GameInterface() {
-  const { gamePhase, showDialog, dialogContent, closeDialog, showInventory, toggleInventory, showShop } = useGameStore();
+  const { gamePhase, showDialog, dialogContent, closeDialog, showInventory, toggleInventory, showShop, showSchool } = useGameStore();
   const { player } = usePlayerStore();
   const { pet } = usePetStore();
   const { isMuted, toggleMute } = useAudio();
@@ -157,7 +158,18 @@ export function GameInterface() {
       {showInventory && <Inventory onClose={toggleInventory} />}
       
       {/* Shop */}
-      {showShop && <Shop />}
+      {showShop && (
+        <div className="absolute inset-0 pointer-events-auto">
+          <Shop />
+        </div>
+      )}
+      
+      {/* School */}
+      {showSchool && (
+        <div className="absolute inset-0 pointer-events-auto">
+          <School />
+        </div>
+      )}
       
       {/* Dialog */}
       {showDialog && (

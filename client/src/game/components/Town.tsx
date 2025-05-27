@@ -18,7 +18,7 @@ const Town = () => {
   const { camera } = useThree();
   const { player } = usePlayerStore();
   const { pet } = usePetStore();
-  const { currentLocation, setLocation, unlockedLocations, openShop } = useGameStore();
+  const { currentLocation, setLocation, unlockedLocations, openShop, openSchool } = useGameStore();
   const { startBattle } = useBattleStore();
   
   // Player movement refs
@@ -133,7 +133,8 @@ const Town = () => {
         // Restore pet happiness and player health
         break;
       case TownLocation.school:
-        // Show learning minigames
+        // Show school interface
+        openSchool();
         break;
       default:
         break;

@@ -1,10 +1,12 @@
 import { useState } from "react";
 import { useGameStore } from "../stores/useGameStore";
 import { usePlayerStore } from "../stores/usePlayerStore";
+import MathGame from "./MathGame";
 
 const School = () => {
   const [selectedActivity, setSelectedActivity] = useState<string | null>(null);
-  const { closeDialog } = useGameStore();
+  const [showMathGame, setShowMathGame] = useState(false);
+  const { closeSchool } = useGameStore();
   const { player } = usePlayerStore();
 
   const activities = [
@@ -38,13 +40,18 @@ const School = () => {
     setSelectedActivity(activityId);
     
     if (activityId === "math") {
-      // For now, we'll handle math activity selection
-      // Later this will launch the MathGame component
-      alert("Math game will be available soon!");
+      setShowMathGame(true);
     } else {
       alert(`${activities.find(a => a.id === activityId)?.name} coming soon!`);
     }
   };
+
+  if (showMathGame) {
+    return <MathGame onClose={() => {
+      console.log('MathGame closed');
+      setShowMathGame(false);
+    }} />;
+  }
 
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
@@ -142,7 +149,10 @@ const School = () => {
             🎯 Choose an activity to start learning!
           </div>
           <button
-            onClick={closeDialog}
+            onClick={() => {
+              console.log('Leave School clicked');
+              closeSchool();
+            }}
             className="px-6 py-2 bg-gray-500 text-white rounded-full font-bold hover:bg-gray-600 transition-colors"
           >
             Leave School
