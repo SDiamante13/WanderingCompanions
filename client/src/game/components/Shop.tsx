@@ -513,7 +513,7 @@ const Shop = () => {
 
   if (currentSubLocation) {
     return (
-      <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-[70]">
+      <div className="fixed inset-0 bg-black/80 flex items-center justify-center p-4 z-[70]">
         <div className="bg-white rounded-3xl shadow-lg border-4 border-blue-500 max-w-4xl w-full max-h-[90vh] overflow-y-auto">
           <div className="p-6">
             {renderSubLocation()}
@@ -539,7 +539,7 @@ const Shop = () => {
   }
 
   return (
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-[60]">
+    <div className="fixed inset-0 bg-black/80 flex items-center justify-center p-4 z-[60]">
       <div className="bg-white rounded-3xl shadow-lg border-4 border-blue-500 max-w-2xl w-full max-h-[90vh] overflow-hidden">
         {/* Header */}
         <div className="p-6 bg-blue-500 text-white text-center">

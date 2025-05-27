@@ -31,7 +31,12 @@ function App() {
   const navigationMode = useGameStore((state) => state.navigationMode);
   const { setBackgroundMusic, setHitSound, setSuccessSound } = useAudio();
 
-  // Initialize audio elements
+  // Show canvas immediately without waiting for audio
+  useEffect(() => {
+    setShowCanvas(true);
+  }, []);
+
+  // Initialize audio elements asynchronously
   useEffect(() => {
     // Create and set up audio elements
     const bgMusic = new Audio("/sounds/background.mp3");
@@ -49,13 +54,7 @@ function App() {
     setHitSound(hit);
     setSuccessSound(success);
 
-    // Show canvas after a short delay to ensure everything is loaded
-    const timer = setTimeout(() => {
-      setShowCanvas(true);
-    }, 500);
-
     return () => {
-      clearTimeout(timer);
       bgMusic.pause();
       hit.pause();
       success.pause();
@@ -91,8 +90,12 @@ function App() {
 
   return (
     <KeyboardControls map={keyboardMap}>
-      {/* Show TreasureMap in 2D mode */}
-      {navigationMode === '2d' && <TreasureMap />}
+      {/* Show TreasureMap in 2D mode with white background */}
+      {navigationMode === '2d' && (
+        <div className="fixed inset-0 bg-white">
+          <TreasureMap />
+        </div>
+      )}
 
       {/* Show Canvas in 3D mode only */}
       {navigationMode === '3d' && (

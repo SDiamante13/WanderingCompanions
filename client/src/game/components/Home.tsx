@@ -5,9 +5,15 @@ import { usePetStore } from "../stores/usePetStore";
 import LoadingSpinner from "./ui/LoadingSpinner";
 
 const Home = () => {
-  const { closeHome, currentSubLocation, setSubLocation } = useGameStore();
-  const { player, updateCoins, updatePlayerHealth } = usePlayerStore();
-  const { pet, updatePetHealth, updatePetHappiness } = usePetStore();
+  const closeHome = useGameStore((state) => state.closeHome);
+  const currentSubLocation = useGameStore((state) => state.currentSubLocation);
+  const setSubLocation = useGameStore((state) => state.setSubLocation);
+  const player = usePlayerStore((state) => state.player);
+  const updateCoins = usePlayerStore((state) => state.updateCoins);
+  const updatePlayerHealth = usePlayerStore((state) => state.updatePlayerHealth);
+  const pet = usePetStore((state) => state.pet);
+  const updatePetHealth = usePetStore((state) => state.updatePetHealth);
+  const updatePetHappiness = usePetStore((state) => state.updatePetHappiness);
 
   const subLocations = [
     {
@@ -253,7 +259,7 @@ const Home = () => {
 
   if (currentSubLocation) {
     return (
-      <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-[70]">
+      <div className="fixed inset-0 bg-black/80 flex items-center justify-center p-4 z-[70]">
         <div className="bg-white rounded-3xl shadow-lg border-4 border-orange-500 max-w-2xl w-full max-h-[90vh] overflow-y-auto">
           <div className="p-6">
             {renderSubLocation()}
@@ -279,7 +285,7 @@ const Home = () => {
   }
 
   return (
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-[60]">
+    <div className="fixed inset-0 bg-black/80 flex items-center justify-center p-4 z-[60]">
       <div className="bg-white rounded-3xl shadow-lg border-4 border-orange-500 max-w-2xl w-full max-h-[90vh] overflow-hidden">
         {/* Header */}
         <div className="p-6 bg-orange-500 text-white text-center">
