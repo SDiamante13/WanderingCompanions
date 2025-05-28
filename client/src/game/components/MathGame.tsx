@@ -22,6 +22,7 @@ const MathGame = ({ onClose }: MathGameProps = {}) => {
   const [showFeedback, setShowFeedback] = useState(false);
   const [isCorrect, setIsCorrect] = useState(false);
   const [gameStarted, setGameStarted] = useState(false);
+  const [pendingCoins, setPendingCoins] = useState(0);
 
   const { updateCoins } = usePlayerStore();
   const { closeDialog } = useGameStore();
@@ -55,6 +56,7 @@ const MathGame = ({ onClose }: MathGameProps = {}) => {
     setGameStarted(true);
     setScore(0);
     setTotalProblems(0);
+    setPendingCoins(0);
     startNewProblem();
   };
 
@@ -69,8 +71,8 @@ const MathGame = ({ onClose }: MathGameProps = {}) => {
 
     if (correct) {
       setScore(score + 1);
-      setFeedback("Great job! 🎉");
-      updateCoins(2); // Reward 2 coins for correct answer
+      setFeedback("Great job! 🎉 +2 coins");
+      setPendingCoins(pendingCoins + 2); // Store coins to award later
     } else {
       setFeedback(`Not quite! The answer is ${currentProblem.answer}. Keep trying! 💪`);
     }
@@ -100,12 +102,15 @@ const MathGame = ({ onClose }: MathGameProps = {}) => {
       bonusCoins = 2;
     }
 
-    if (bonusCoins > 0) {
-      updateCoins(bonusCoins);
+    // Award all pending coins plus bonus at the end
+    const totalCoins = pendingCoins + bonusCoins;
+    if (totalCoins > 0) {
+      // Delay coin update to prevent unmounting during game
+      setTimeout(() => updateCoins(totalCoins), 100);
     }
 
     setFeedback(
-      `Game Complete! 🎓\nScore: ${finalScore}/10 (${accuracy}%)\n${bonusCoins > 0 ? `Bonus: ${bonusCoins} coins!` : "Keep practicing!"}`
+      `Game Complete! 🎓\nScore: ${finalScore}/10 (${accuracy}%)\n${totalCoins > 0 ? `Total coins earned: ${totalCoins}!` : "Keep practicing!"}`
     );
     setShowFeedback(true);
     setGameStarted(false);

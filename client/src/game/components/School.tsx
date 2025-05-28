@@ -4,7 +4,7 @@ import { usePlayerStore } from "../stores/usePlayerStore";
 import { usePetStore } from "../stores/usePetStore";
 import MathGame from "./MathGame";
 
-const School = () => {
+const School = React.memo(() => {
   const closeSchool = useGameStore((state) => state.closeSchool);
   const showSchool = useGameStore((state) => state.showSchool);
   const currentSubLocation = useGameStore((state) => state.currentSubLocation);
@@ -340,6 +340,6 @@ const School = () => {
       </div>
     </div>
   );
-};
+});
 
-export default React.memo(School);
+export default School;
