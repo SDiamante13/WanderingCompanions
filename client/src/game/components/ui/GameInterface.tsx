@@ -43,7 +43,7 @@ export function GameInterface() {
     if (showInventory) {
       toggleInventory();
     }
-  }, [gamePhase, showInventory, toggleInventory]);
+  }, [gamePhase]);
   
   // Don't show interface during initial game phases or if player not ready
   if (gamePhase === "welcome" || 

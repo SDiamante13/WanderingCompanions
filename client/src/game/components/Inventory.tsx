@@ -77,25 +77,20 @@ const Inventory: React.FC<InventoryProps> = ({ onClose }) => {
   const usedSlots = (player.inventory || []).reduce((sum, item) => sum + item.quantity, 0);
   
   return (
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-[60]">
-      <div className="bg-white rounded-3xl shadow-lg border-4 border-blue-500 max-w-2xl w-full max-h-[90vh] overflow-hidden">
+    <div 
+      className="fixed inset-0 bg-black/50 flex items-center justify-start p-4 z-[70] pointer-events-auto"
+      onClick={onClose}
+    >
+      <div 
+        className="bg-white rounded-3xl shadow-lg border-4 border-blue-500 max-w-2xl w-full max-h-[90vh] overflow-hidden ml-4 pointer-events-auto"
+        onClick={(e) => e.stopPropagation()}
+      >
         {/* Header */}
         <div className="p-4 bg-blue-500 text-white flex justify-between items-center">
           <h2 className="text-2xl font-bold">Inventory</h2>
-          <div className="flex items-center gap-2">
-            <span className="text-sm font-bold">
-              {`Slots: ${usedSlots}/${totalSlots}`}
-            </span>
-            <button
-              onClick={onClose}
-              className="p-2 hover:bg-white/20 rounded-full transition-colors"
-            >
-              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <line x1="18" y1="6" x2="6" y2="18"></line>
-                <line x1="6" y1="6" x2="18" y2="18"></line>
-              </svg>
-            </button>
-          </div>
+          <span className="text-sm font-bold">
+            {`Slots: ${usedSlots}/${totalSlots}`}
+          </span>
         </div>
           
         {/* Inventory tabs */}
@@ -177,12 +172,12 @@ const Inventory: React.FC<InventoryProps> = ({ onClose }) => {
         </div>
           
         {/* Footer */}
-        <div className="p-4 border-t border-gray-200 flex justify-end">
+        <div className="p-4 border-t border-gray-200 flex justify-center pointer-events-auto">
           <button
             onClick={onClose}
-            className="px-6 py-2 bg-orange-500 text-white rounded-full font-bold hover:bg-orange-600 transition-colors"
+            className="px-8 py-3 bg-red-500 text-white rounded-full font-bold hover:bg-red-600 transition-colors text-lg cursor-pointer pointer-events-auto"
           >
-            Close
+            ✕ Close Inventory
           </button>
         </div>
       </div>
