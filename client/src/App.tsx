@@ -10,6 +10,7 @@ import CharacterCreation from "./game/components/CharacterCreation";
 import PetAssignment from "./game/components/PetAssignment";
 import Town from "./game/components/Town";
 import TreasureMap from "./game/components/TreasureMap";
+import Adventure from "./game/components/Adventure";
 import Battle from "./game/components/Battle";
 import SoundManager from "./game/components/SoundManager";
 import { GameInterface } from "./game/components/ui/GameInterface";
@@ -76,6 +77,8 @@ function App() {
         return <PetAssignment />;
       case "town":
         return <Town />;
+      case "adventure":
+        return <Adventure />;
       case "battle":
         return <Battle />;
       default:

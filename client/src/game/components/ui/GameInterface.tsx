@@ -9,7 +9,6 @@ import Shop from "../Shop";
 import School from "../School";
 import Home from "../Home";
 import Park from "../Park";
-import Adventure from "../Adventure";
 
 export function GameInterface() {
   // Optimize store subscriptions - only subscribe to what we need
@@ -17,6 +16,7 @@ export function GameInterface() {
   const showDialog = useGameStore((state) => state.showDialog);
   const dialogContent = useGameStore((state) => state.dialogContent);
   const closeDialog = useGameStore((state) => state.closeDialog);
+  const closeAdventure = useGameStore((state) => state.closeAdventure);
   const showInventory = useGameStore((state) => state.showInventory);
   const toggleInventory = useGameStore((state) => state.toggleInventory);
   const showShop = useGameStore((state) => state.showShop);
@@ -37,6 +37,7 @@ export function GameInterface() {
   // });
   
   const [showStats, setShowStats] = useState(false);
+  const [adventureMessage, setAdventureMessage] = useState("");
   
   // Hide inventory when game phase changes
   useEffect(() => {
@@ -44,6 +45,18 @@ export function GameInterface() {
       toggleInventory();
     }
   }, [gamePhase]);
+  
+  // Listen for adventure messages
+  useEffect(() => {
+    const handleMessage = (event: CustomEvent) => {
+      setAdventureMessage(event.detail);
+    };
+    
+    window.addEventListener('adventureMessage', handleMessage as EventListener);
+    return () => {
+      window.removeEventListener('adventureMessage', handleMessage as EventListener);
+    };
+  }, []);
   
   // Don't show interface during initial game phases or if player not ready
   if (gamePhase === "welcome" || 
@@ -225,14 +238,37 @@ export function GameInterface() {
         </div>
       )}
       
-      {/* Adventure */}
-      {showAdventure && (
-        <div 
-          className="fixed inset-0 pointer-events-auto z-[100]"
-          onClick={(e) => e.stopPropagation()}
-        >
-          <Adventure />
-        </div>
+      {/* Adventure UI */}
+      {gamePhase === "adventure" && (
+        <>
+          <div className="fixed top-4 left-4 text-white z-50 pointer-events-none">
+            <div className="bg-black/50 p-4 rounded-lg">
+              <h2 className="text-xl font-bold mb-2">🌲 Adventure Forest</h2>
+              <p>Use WASD to move, E to interact</p>
+              <p>Avoid enemies or face them in battle!</p>
+              <p className="mt-2">Coins: {player?.coins || 0}</p>
+            </div>
+          </div>
+          
+          {/* Interaction message */}
+          {adventureMessage && (
+            <div className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-50 pointer-events-none">
+              <div className="bg-green-600 text-white px-6 py-3 rounded-full font-bold text-lg">
+                {adventureMessage}
+              </div>
+            </div>
+          )}
+          
+          {/* Exit button */}
+          <div className="fixed bottom-4 right-4 z-50">
+            <button
+              onClick={closeAdventure}
+              className="px-6 py-3 bg-red-600 text-white rounded-full font-bold hover:bg-red-700 transition pointer-events-auto"
+            >
+              Exit Adventure
+            </button>
+          </div>
+        </>
       )}
       
       {/* Dialog */}

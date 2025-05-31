@@ -14,6 +14,7 @@ export enum GamePhase {
   character_creation = "character_creation",
   pet_assignment = "pet_assignment",
   town = "town",
+  adventure = "adventure",
   battle = "battle",
 }
 

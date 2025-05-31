@@ -1,463 +1,277 @@
-import React, { useState, useCallback } from "react";
+import React, { useRef, useState, useEffect } from "react";
+import { useFrame, useThree } from "@react-three/fiber";
+import { useKeyboardControls } from "@react-three/drei";
+import * as THREE from "three";
 import { useGameStore } from "../stores/useGameStore";
 import { usePlayerStore } from "../stores/usePlayerStore";
 import { usePetStore } from "../stores/usePetStore";
 import { useBattleStore } from "../stores/useBattleStore";
 import { GamePhase } from "../types";
+import Character from "./models/Character";
+import Pet from "./models/Pet";
+import Enemy from "./models/Enemy";
+
+interface EnemyData {
+  id: string;
+  name: string;
+  level: number;
+  position: THREE.Vector3;
+  color: string;
+  type: string;
+}
 
 const Adventure = () => {
   const closeAdventure = useGameStore((state) => state.closeAdventure);
-  const currentSubLocation = useGameStore((state) => state.currentSubLocation);
-  const setSubLocation = useGameStore((state) => state.setSubLocation);
   const setGamePhase = useGameStore((state) => state.setGamePhase);
   const player = usePlayerStore((state) => state.player);
   const updateCoins = usePlayerStore((state) => state.updateCoins);
-  const updatePlayerHealth = usePlayerStore((state) => state.updatePlayerHealth);
   const pet = usePetStore((state) => state.pet);
-  const updatePetHealth = usePetStore((state) => state.updatePetHealth);
-  const updatePetHappiness = usePetStore((state) => state.updatePetHappiness);
   const startBattle = useBattleStore((state) => state.startBattle);
-
-  const subLocations = [
-    {
-      id: "forest_edge",
-      name: "🌲 Forest Edge",
-      description: "Safe exploration for beginners",
-      color: "bg-green-600",
-      hoverColor: "hover:bg-green-700",
-      difficulty: "Easy"
-    },
-    {
-      id: "deep_forest",
-      name: "🌲🌲 Deep Forest", 
-      description: "Challenging adventures await",
-      color: "bg-emerald-700",
-      hoverColor: "hover:bg-emerald-800",
-      difficulty: "Medium"
-    },
-    {
-      id: "ancient_grove",
-      name: "🌳✨ Ancient Grove",
-      description: "Mystical and dangerous territory",
-      color: "bg-purple-700", 
-      hoverColor: "hover:bg-purple-800",
-      difficulty: "Hard"
+  
+  // Movement controls
+  const [, getKeys] = useKeyboardControls();
+  const { camera } = useThree();
+  const playerRef = useRef<THREE.Group>(null);
+  const petRef = useRef<THREE.Group>(null);
+  const playerPosition = useRef(new THREE.Vector3(0, 0, 10));
+  const playerRotation = useRef(new THREE.Euler(0, 0, 0));
+  
+  // Enemy management
+  const [enemies, setEnemies] = useState<EnemyData[]>([]);
+  const [collectedCoins, setCollectedCoins] = useState<Set<string>>(new Set());
+  const [interactionMessage, setInteractionMessage] = useState("");
+  
+  // Initialize enemies
+  useEffect(() => {
+    const enemyData: EnemyData[] = [
+      {
+        id: "enemy1",
+        name: "Wild Cat",
+        level: 1,
+        position: new THREE.Vector3(-8, 0, -5),
+        color: "#FF9800",
+        type: "wild_cat"
+      },
+      {
+        id: "enemy2",
+        name: "Forest Wolf",
+        level: 2,
+        position: new THREE.Vector3(10, 0, -8),
+        color: "#868E96",
+        type: "mischievous_monkey"
+      },
+      {
+        id: "enemy3",
+        name: "Angry Bird",
+        level: 3,
+        position: new THREE.Vector3(0, 0, -15),
+        color: "#F44336",
+        type: "angry_bird"
+      },
+      {
+        id: "enemy4",
+        name: "Sneaky Snake",
+        level: 5,
+        position: new THREE.Vector3(-15, 0, -20),
+        color: "#9C27B0",
+        type: "sneaky_snake"
+      }
+    ];
+    setEnemies(enemyData);
+  }, []);
+  
+  // Handle movement and interactions
+  useFrame((_, delta) => {
+    if (!playerRef.current) return;
+    
+    const { forward, backward, leftward, rightward, interact } = getKeys();
+    const speed = 5 * delta;
+    
+    // Update player position based on movement keys
+    if (forward) {
+      playerPosition.current.z -= speed;
+      playerRotation.current.y = Math.PI;
     }
-  ];
-
-  const handleSubLocationClick = useCallback((subLocationId: string) => {
-    setSubLocation(subLocationId);
-  }, [setSubLocation]);
-
-  const handleBackToAdventure = useCallback(() => {
-    setSubLocation(null);
-  }, [setSubLocation]);
-
-  const ForestEdge = () => {
-    const [exploring, setExploring] = useState(false);
-
-    const quickExplore = () => {
-      if (pet) {
-        const reward = Math.floor(Math.random() * 3) + 1;
-        updateCoins(reward);
-        updatePetHappiness(15);
-        alert(`${pet.name} found ${reward} coins while exploring! +15 happiness`);
-      }
-    };
-
-    const lookForBerries = () => {
-      setExploring(true);
-      setTimeout(() => {
-        setExploring(false);
-        if (pet && player) {
-          const berries = Math.floor(Math.random() * 2) + 1;
-          updatePetHealth(berries * 5);
-          updatePlayerHealth(berries * 3);
-          updatePetHappiness(10);
-          alert(`Found ${berries} healing berries! Pet +${berries * 5} health, Player +${berries * 3} health`);
-        }
-      }, 2000);
-    };
-
-    const encounterWildlife = () => {
-      const encounter = Math.random();
-      if (encounter > 0.7) {
-        alert("A wild creature appears! Prepare for battle!");
-        startBattle("Wild Cat", 1);
-        setGamePhase(GamePhase.battle);
-        closeAdventure();
-      } else if (encounter > 0.4) {
-        updateCoins(3);
-        alert("You found a friendly squirrel who shared 3 coins with you!");
-      } else {
-        updatePetHappiness(20);
-        alert(`${pet?.name} made friends with a butterfly! +20 happiness`);
-      }
-    };
-
-    return (
-      <div className="space-y-6">
-        <h2 className="text-2xl font-bold text-gray-800 mb-4">🌲 Forest Edge</h2>
-        <p className="text-gray-600 mb-6">A peaceful area perfect for beginning adventurers. Wildlife is friendly here.</p>
-        
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-          <button
-            onClick={quickExplore}
-            className="p-4 bg-green-500 text-white rounded-lg font-bold hover:bg-green-600 transition"
-          >
-            Quick Explore
-            <div className="text-sm mt-1">Find 1-3 coins</div>
-          </button>
-          
-          <button
-            onClick={lookForBerries}
-            disabled={exploring}
-            className="p-4 bg-red-500 text-white rounded-lg font-bold hover:bg-red-600 transition disabled:bg-gray-400"
-          >
-            {exploring ? "Searching... (2s)" : "Look for Berries"}
-            <div className="text-sm mt-1">Find healing berries</div>
-          </button>
-
-          <button
-            onClick={encounterWildlife}
-            className="p-4 bg-blue-500 text-white rounded-lg font-bold hover:bg-blue-600 transition"
-          >
-            Meet Wildlife
-            <div className="text-sm mt-1">Random encounter</div>
-          </button>
-        </div>
-
-        <div className="bg-green-50 p-4 rounded-lg border border-green-200">
-          <h3 className="font-bold text-green-800 mb-2">Forest Edge Safety:</h3>
-          <ul className="text-sm text-green-700 space-y-1">
-            <li>• Low danger, perfect for new adventurers</li>
-            <li>• Abundant berries and small treasures</li>
-            <li>• Wildlife encounters are mostly friendly</li>
-          </ul>
-        </div>
-      </div>
+    if (backward) {
+      playerPosition.current.z += speed;
+      playerRotation.current.y = 0;
+    }
+    if (leftward) {
+      playerPosition.current.x -= speed;
+      playerRotation.current.y = Math.PI / 2;
+    }
+    if (rightward) {
+      playerPosition.current.x += speed;
+      playerRotation.current.y = -Math.PI / 2;
+    }
+    
+    // Boundary constraints
+    playerPosition.current.x = Math.max(-20, Math.min(20, playerPosition.current.x));
+    playerPosition.current.z = Math.max(-25, Math.min(15, playerPosition.current.z));
+    
+    // Update player model
+    playerRef.current.position.copy(playerPosition.current);
+    playerRef.current.rotation.y = playerRotation.current.y;
+    
+    // Update camera to follow player
+    camera.position.lerp(
+      new THREE.Vector3(
+        playerPosition.current.x,
+        playerPosition.current.y + 8,
+        playerPosition.current.z + 10
+      ),
+      0.1
     );
-  };
-
-  const DeepForest = () => {
-    const [exploring, setExploring] = useState(false);
-
-    const searchForTreasure = () => {
-      setExploring(true);
-      setTimeout(() => {
-        setExploring(false);
-        const found = Math.random() > 0.3;
-        if (found && player) {
-          const treasure = Math.floor(Math.random() * 8) + 5;
-          updateCoins(treasure);
-          updatePetHappiness(25);
-          alert(`Found a treasure chest with ${treasure} coins! +25 happiness`);
-        } else {
-          alert("No treasure found this time, but the adventure continues!");
-        }
-      }, 4000);
-    };
-
-    const huntForMushrooms = () => {
-      setExploring(true);
-      setTimeout(() => {
-        setExploring(false);
-        if (pet && player) {
-          const mushrooms = Math.floor(Math.random() * 3) + 2;
-          updatePetHealth(mushrooms * 8);
-          updatePlayerHealth(mushrooms * 6);
-          updateCoins(mushrooms * 2);
-          alert(`Found ${mushrooms} magic mushrooms! Great healing and ${mushrooms * 2} coins`);
-        }
-      }, 3000);
-    };
-
-    const faceChallenge = () => {
-      const challenge = Math.random();
-      if (challenge > 0.6) {
-        alert("A forest guardian blocks your path! Battle time!");
-        startBattle("Angry Bird", 3);
+    camera.lookAt(playerPosition.current);
+    
+    // Update pet position to follow player
+    if (petRef.current && pet) {
+      const petTargetPos = playerPosition.current.clone().add(new THREE.Vector3(-1, 0, 1));
+      petRef.current.position.lerp(petTargetPos, 0.1);
+      petRef.current.lookAt(playerRef.current.position);
+    }
+    
+    // Check for enemy collisions
+    enemies.forEach((enemy) => {
+      const distance = playerPosition.current.distanceTo(enemy.position);
+      if (distance < 2) {
+        // Trigger battle
+        startBattle(enemy.name, enemy.level);
         setGamePhase(GamePhase.battle);
         closeAdventure();
-      } else if (challenge > 0.3) {
-        const coins = Math.floor(Math.random() * 6) + 4;
+      }
+    });
+    
+    // Check for interactions
+    if (interact) {
+      // Check for treasure chests
+      const treasureDistance = playerPosition.current.distanceTo(new THREE.Vector3(12, 0, -12));
+      if (treasureDistance < 3 && !collectedCoins.has("treasure1")) {
+        const coins = Math.floor(Math.random() * 10) + 5;
         updateCoins(coins);
-        updatePetHappiness(20);
-        alert(`Overcame a forest puzzle! Earned ${coins} coins and +20 happiness`);
-      } else {
-        updatePlayerHealth(-5);
-        alert("Got scratched by thorny bushes! -5 health");
+        setCollectedCoins(prev => {
+          const newSet = new Set(prev);
+          newSet.add("treasure1");
+          return newSet;
+        });
+        setInteractionMessage(`Found ${coins} coins!`);
+        setTimeout(() => setInteractionMessage(""), 3000);
       }
-    };
-
-    return (
-      <div className="space-y-6">
-        <h2 className="text-2xl font-bold text-gray-800 mb-4">🌲🌲 Deep Forest</h2>
-        <p className="text-gray-600 mb-6">Venture deeper into the mysterious forest where greater rewards await the brave.</p>
-        
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-          <button
-            onClick={searchForTreasure}
-            disabled={exploring}
-            className="p-4 bg-yellow-600 text-white rounded-lg font-bold hover:bg-yellow-700 transition disabled:bg-gray-400"
-          >
-            {exploring ? "Searching... (4s)" : "Search for Treasure"}
-            <div className="text-sm mt-1">5-12 coins possible</div>
-          </button>
-          
-          <button
-            onClick={huntForMushrooms}
-            disabled={exploring}
-            className="p-4 bg-purple-600 text-white rounded-lg font-bold hover:bg-purple-700 transition disabled:bg-gray-400"
-          >
-            {exploring ? "Hunting... (3s)" : "Hunt Mushrooms"}
-            <div className="text-sm mt-1">Magic healing mushrooms</div>
-          </button>
-
-          <button
-            onClick={faceChallenge}
-            className="p-4 bg-red-600 text-white rounded-lg font-bold hover:bg-red-700 transition"
-          >
-            Face Challenge
-            <div className="text-sm mt-1">High risk, high reward</div>
-          </button>
-        </div>
-
-        <div className="bg-emerald-50 p-4 rounded-lg border border-emerald-200">
-          <h3 className="font-bold text-emerald-800 mb-2">Deep Forest Dangers:</h3>
-          <ul className="text-sm text-emerald-700 space-y-1">
-            <li>• Moderate danger with better rewards</li>
-            <li>• Hidden treasures and magic mushrooms</li>
-            <li>• Forest guardians may challenge you</li>
-          </ul>
-        </div>
-      </div>
-    );
-  };
-
-  const AncientGrove = () => {
-    const [exploring, setExploring] = useState(false);
-
-    const seekAncientArtifact = () => {
-      setExploring(true);
-      setTimeout(() => {
-        setExploring(false);
-        const success = Math.random() > 0.5;
-        if (success && player && pet) {
-          const coins = Math.floor(Math.random() * 15) + 10;
-          updateCoins(coins);
-          updatePetHealth(20);
-          updatePetHappiness(30);
-          alert(`Discovered an ancient artifact! ${coins} coins, +20 health, +30 happiness`);
-        } else {
-          updatePlayerHealth(-10);
-          alert("The ancient magic was too powerful! -10 health");
-        }
-      }, 6000);
-    };
-
-    const communeWithSpirits = () => {
-      setExploring(true);
-      setTimeout(() => {
-        setExploring(false);
-        if (pet && player) {
-          const blessing = Math.random() > 0.7;
-          if (blessing) {
-            updatePetHealth(30);
-            updatePlayerHealth(25);
-            updatePetHappiness(40);
-            updateCoins(8);
-            alert("Forest spirits blessed you! Major healing and happiness boost!");
-          } else {
-            updatePetHappiness(15);
-            alert(`${pet.name} enjoyed the mystical atmosphere! +15 happiness`);
-          }
-        }
-      }, 5000);
-    };
-
-    const faceAncientBeast = () => {
-      alert("An ancient forest beast emerges from the shadows!");
-      startBattle("Sneaky Snake", 5);
-      setGamePhase(GamePhase.battle);
-      closeAdventure();
-    };
-
-    return (
-      <div className="space-y-6">
-        <h2 className="text-2xl font-bold text-gray-800 mb-4">🌳✨ Ancient Grove</h2>
-        <p className="text-gray-600 mb-6">The most mystical and dangerous part of the forest. Ancient magic flows here.</p>
-        
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-          <button
-            onClick={seekAncientArtifact}
-            disabled={exploring}
-            className="p-4 bg-amber-600 text-white rounded-lg font-bold hover:bg-amber-700 transition disabled:bg-gray-400"
-          >
-            {exploring ? "Seeking... (6s)" : "Seek Artifact"}
-            <div className="text-sm mt-1">10-24 coins, risky</div>
-          </button>
-          
-          <button
-            onClick={communeWithSpirits}
-            disabled={exploring}
-            className="p-4 bg-indigo-600 text-white rounded-lg font-bold hover:bg-indigo-700 transition disabled:bg-gray-400"
-          >
-            {exploring ? "Communing... (5s)" : "Commune with Spirits"}
-            <div className="text-sm mt-1">Possible spirit blessing</div>
-          </button>
-
-          <button
-            onClick={faceAncientBeast}
-            className="p-4 bg-rose-700 text-white rounded-lg font-bold hover:bg-rose-800 transition"
-          >
-            Face Ancient Beast
-            <div className="text-sm mt-1">Challenging battle</div>
-          </button>
-        </div>
-
-        <div className="bg-purple-50 p-4 rounded-lg border border-purple-200">
-          <h3 className="font-bold text-purple-800 mb-2">Ancient Grove Mysteries:</h3>
-          <ul className="text-sm text-purple-700 space-y-1">
-            <li>• High danger but legendary rewards</li>
-            <li>• Ancient artifacts hold great power</li>
-            <li>• Forest spirits may bless or curse</li>
-            <li>• Ancient beasts guard the deepest secrets</li>
-          </ul>
-        </div>
-      </div>
-    );
-  };
-
-  const renderSubLocation = () => {
-    switch (currentSubLocation) {
-      case "forest_edge":
-        return <ForestEdge />;
-      case "deep_forest":
-        return <DeepForest />;
-      case "ancient_grove":
-        return <AncientGrove />;
-      default:
-        return null;
+      
+      // Exit portal
+      const exitDistance = playerPosition.current.distanceTo(new THREE.Vector3(0, 0, 12));
+      if (exitDistance < 3) {
+        closeAdventure();
+      }
     }
-  };
-
-  if (currentSubLocation) {
-    return (
-      <div className="fixed inset-0 bg-black/80 flex items-center justify-center p-4 z-[70]">
-        <div className="bg-white rounded-3xl shadow-lg border-4 border-emerald-600 max-w-2xl w-full max-h-[90vh] overflow-y-auto">
-          <div className="p-6">
-            {renderSubLocation()}
-            
-            <div className="flex justify-between items-center mt-6 pt-4 border-t border-gray-200">
-              <button
-                onClick={handleBackToAdventure}
-                className="px-6 py-2 bg-gray-500 text-white rounded-full font-bold hover:bg-gray-600 transition"
-              >
-                ← Back to Adventure
-              </button>
-              <button
-                onClick={closeAdventure}
-                className="px-6 py-2 bg-emerald-600 text-white rounded-full font-bold hover:bg-emerald-700 transition"
-              >
-                Leave Adventure
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
+  });
+  
+  // Pass interaction message to global state
+  useEffect(() => {
+    if (interactionMessage) {
+      const event = new CustomEvent('adventureMessage', { detail: interactionMessage });
+      window.dispatchEvent(event);
+    }
+  }, [interactionMessage]);
+  
   return (
-    <div className="fixed inset-0 bg-black/80 flex items-center justify-center p-4 z-[60]">
-      <div className="bg-white rounded-3xl shadow-lg border-4 border-emerald-600 max-w-2xl w-full max-h-[90vh] overflow-hidden">
-        {/* Header */}
-        <div className="p-6 bg-emerald-600 text-white text-center">
-          <h1 className="text-3xl font-bold mb-2">🏞️ Adventure Awaits!</h1>
-          <p className="text-lg">Explore the mystical forest and discover its secrets</p>
-        </div>
-
-        {/* Player and Pet Info */}
-        <div className="p-4 bg-emerald-100 border-b border-emerald-200">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <div 
-                className="w-10 h-10 rounded-full border-2 border-emerald-600"
-                style={{ backgroundColor: player?.color || "#4FC3F7" }}
-              ></div>
-              <div>
-                <p className="font-bold text-gray-800">{player?.name || "Player"}</p>
-                <p className="text-sm text-gray-600">Health: {player?.health}/{player?.maxHealth}</p>
-              </div>
-            </div>
-            {pet && (
-              <div className="flex items-center gap-3">
-                <div 
-                  className="w-10 h-10 rounded-full border-2 border-emerald-600"
-                  style={{ backgroundColor: pet.color }}
-                ></div>
-                <div>
-                  <p className="font-bold text-gray-800">{pet.name}</p>
-                  <p className="text-sm text-gray-600">Health: {pet.health}/{pet.maxHealth}</p>
-                </div>
-              </div>
-            )}
-          </div>
-        </div>
-
-        {/* Area Selection */}
-        <div className="p-6">
-          <h2 className="text-xl font-bold text-gray-800 mb-4">Choose Your Destination</h2>
-          <div className="grid grid-cols-1 gap-4">
-            {subLocations.map((area) => (
-              <button
-                key={area.id}
-                onClick={() => handleSubLocationClick(area.id)}
-                className={`p-4 ${area.color} text-white rounded-xl font-bold ${area.hoverColor} transition-all transform hover:scale-105 text-left`}
-              >
-                <div className="flex justify-between items-center">
-                  <div>
-                    <div className="text-xl mb-1">{area.name}</div>
-                    <div className="text-sm font-normal">{area.description}</div>
-                  </div>
-                  <div className="text-right">
-                    <div className="text-xs bg-white/20 px-2 py-1 rounded-full">
-                      {area.difficulty}
-                    </div>
-                  </div>
-                </div>
-              </button>
-            ))}
-          </div>
-
-          <div className="mt-6 p-4 bg-emerald-50 rounded-lg border border-emerald-200">
-            <div className="flex items-start gap-2">
-              <span className="text-emerald-600 text-xl">🏞️</span>
-              <div>
-                <h4 className="font-bold text-emerald-800 mb-1">Adventure Tips:</h4>
-                <ul className="text-sm text-emerald-700 space-y-1">
-                  <li>• Start with easier areas to build experience</li>
-                  <li>• Keep your pet healthy for better exploration</li>
-                  <li>• Some encounters may lead to battles</li>
-                  <li>• Greater risks yield greater rewards</li>
-                </ul>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Footer */}
-        <div className="p-4 border-t border-gray-200 flex justify-center">
-          <button
-            onClick={closeAdventure}
-            className="px-6 py-2 bg-gray-500 text-white rounded-full font-bold hover:bg-gray-600 transition-colors"
-          >
-            Return to Town
-          </button>
-        </div>
-      </div>
-    </div>
+    <>
+      {/* Forest environment */}
+      {/* Sky */}
+      <mesh position={[0, 0, -50]} scale={[100, 50, 1]}>
+        <planeGeometry />
+        <meshBasicMaterial color="#1a3d2e" />
+      </mesh>
+      
+      {/* Ground */}
+      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.5, 0]} scale={[40, 50, 1]}>
+        <planeGeometry />
+        <meshStandardMaterial color="#2d5016" />
+      </mesh>
+      
+      {/* Trees */}
+      {Array.from({ length: 20 }, (_, i) => {
+        const x = (Math.random() - 0.5) * 40;
+        const z = (Math.random() - 0.5) * 50;
+        // Avoid placing trees too close to paths
+        if (Math.abs(x) < 3 || Math.abs(z) < 3) return null;
+        
+        return (
+          <group key={`tree-${i}`} position={[x, 0, z]}>
+            {/* Tree trunk */}
+            <mesh position={[0, 1, 0]}>
+              <cylinderGeometry args={[0.5, 0.5, 2]} />
+              <meshStandardMaterial color="#8B4513" />
+            </mesh>
+            {/* Tree leaves */}
+            <mesh position={[0, 2.5, 0]}>
+              <coneGeometry args={[1.5, 2, 8]} />
+              <meshStandardMaterial color="#228B22" />
+            </mesh>
+          </group>
+        );
+      }).filter(Boolean)}
+      
+      {/* Lighting */}
+      <ambientLight intensity={0.4} />
+      <directionalLight 
+        position={[10, 10, 5]} 
+        intensity={0.8} 
+        castShadow 
+        color="#FFF8DC"
+      />
+      <pointLight position={[0, 5, 0]} intensity={0.5} color="#FFD700" />
+      
+      {/* Player character */}
+      <group ref={playerRef} position={[0, 0, 10]}>
+        <Character color={player?.color || "#4FC3F7"} />
+      </group>
+      
+      {/* Pet */}
+      {pet && (
+        <group ref={petRef} position={[-1, 0, 11]}>
+          <Pet type={pet.type} color={pet.color} />
+        </group>
+      )}
+      
+      {/* Enemies */}
+      {enemies.map((enemy) => (
+        <group key={enemy.id} position={enemy.position.toArray()}>
+          <Enemy type={enemy.type} level={enemy.level} />
+          {/* Enemy name label */}
+          <mesh position={[0, 2.5, 0]}>
+            <planeGeometry args={[2, 0.5]} />
+            <meshBasicMaterial color="red" opacity={0.8} transparent />
+          </mesh>
+        </group>
+      ))}
+      
+      {/* Treasure chest */}
+      {!collectedCoins.has("treasure1") && (
+        <group position={[12, 0, -12]}>
+          <mesh>
+            <boxGeometry args={[1, 0.8, 0.8]} />
+            <meshStandardMaterial color="#D2691E" />
+          </mesh>
+          <mesh position={[0, 0.5, 0]}>
+            <boxGeometry args={[0.8, 0.3, 0.6]} />
+            <meshStandardMaterial color="#FFD700" />
+          </mesh>
+        </group>
+      )}
+      
+      {/* Exit portal */}
+      <group position={[0, 0, 12]}>
+        <mesh rotation={[0, 0, 0]}>
+          <ringGeometry args={[1.5, 2, 8]} />
+          <meshBasicMaterial color="#00FFFF" side={THREE.DoubleSide} />
+        </mesh>
+        <mesh position={[0, 2.5, 0]}>
+          <planeGeometry args={[2, 0.5]} />
+          <meshBasicMaterial color="white" opacity={0.8} transparent />
+        </mesh>
+      </group>
+    </>
   );
 };
 

@@ -192,14 +192,20 @@ export const useGameStore = create<GameState>()(
       
       // Adventure management
       openAdventure: () => set({
-        showAdventure: true,
+        gamePhase: GamePhase.adventure,
+        navigationMode: '3d',  // Force 3D mode for adventure
+        showAdventure: false,
         showShop: false,
         showSchool: false,
         showHome: false,
         showPark: false,
         currentSubLocation: null
       }),
-      closeAdventure: () => set({ showAdventure: false, currentSubLocation: null }),
+      closeAdventure: () => set({ 
+        gamePhase: GamePhase.town,
+        showAdventure: false, 
+        currentSubLocation: null 
+      }),
       
       // Navigation management
       setNavigationMode: (mode) => set({ navigationMode: mode }),

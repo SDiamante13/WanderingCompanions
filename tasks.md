@@ -64,6 +64,8 @@
 ## 🚀 **NEXT PHASE: FEATURE EXPANSION & POLISH**
 
 ### Priority 1: Adventure & Exploration Features
+- [x] Adventure should have a battle system between character, pet vs. enemy
+- [ ] Add "Run from Battle" option with chance of failure
 - [ ] Implement Park.tsx with outdoor activities and treasure hunting
 - [ ] Create TreasureMap.tsx mini-game with rewards
 - [ ] Add more locations to explore beyond current town buildings
@@ -74,6 +76,8 @@
 - [ ] Implement pet personality traits affecting behavior
 - [ ] Create pet-specific mini-games and abilities
 - [ ] Add pet mood system with visual indicators
+- [ ] Add battle status effects (poison, sleep, paralysis, etc.)
+- [ ] Add item usage during battles (potions, power-ups, etc.)
 
 ### Priority 3: Social & Progression Features
 - [ ] Add achievement system for completed activities
